@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Services from "../../services/Services";
 import { useUser } from "../../context/UserContext";
@@ -25,6 +25,7 @@ const Login = () => {
             name: (userData?.name as string) || "",
             email: (userData?.email as string) || "",
           },
+          isLoading: false,
         },
       });
       console.log(userData);
