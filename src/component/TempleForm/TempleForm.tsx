@@ -316,7 +316,7 @@ const TempleForm: React.FC = () => {
                   onChange={(e) =>
                     updateTempleDescription(descIndex, e.target.value)
                   }
-                  placeholder="Enter temple description point"
+                  placeholder="Enter temple description point."
                   rows={2}
                 />
                 {formData.description.length > 1 && (
