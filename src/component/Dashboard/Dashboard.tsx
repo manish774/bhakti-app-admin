@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Services from "../../services/Services";
 import DashboardEventEmitter from "../../services/DashboardEvents";
-import type { Temple } from "../../types/api";
+import type { Temple, Package } from "../../types/api";
 import "./Dashboard.css";
 
 const Dashboard: React.FC = () => {
@@ -16,6 +16,9 @@ const Dashboard: React.FC = () => {
   const [editingTemple, setEditingTemple] = useState<Temple | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Temple>>({});
+  const [editingPackages, setEditingPackages] = useState<Package[]>([]);
+  const [newPackages, setNewPackages] = useState<Partial<Package>[]>([]);
+  const [deletedPackageIds, setDeletedPackageIds] = useState<string[]>([]);
 
   const fetchTemples = async () => {
     try {
@@ -90,6 +93,9 @@ const Dashboard: React.FC = () => {
       extraInfo: { ...temple.extraInfo },
       prasadDelivery: { ...temple.prasadDelivery },
     });
+    setEditingPackages(temple.packages.map((pkg) => ({ ...pkg })));
+    setNewPackages([]);
+    setDeletedPackageIds([]);
     setIsEditMode(true);
     setIsModalOpen(true);
   };
@@ -149,13 +155,175 @@ const Dashboard: React.FC = () => {
     });
   };
 
+  const handleEditPackage = (
+    index: number,
+    field: keyof Package,
+    value: string | number | boolean
+  ) => {
+    setEditingPackages((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+      return updated;
+    });
+  };
+
+  const handleEditPackageDescription = (
+    packageIndex: number,
+    descIndex: number,
+    detail: string
+  ) => {
+    setEditingPackages((prev) => {
+      const updated = [...prev];
+      const pkg = { ...updated[packageIndex] };
+      if (pkg.description) {
+        pkg.description = pkg.description.map((desc, idx) =>
+          idx === descIndex ? { ...desc, detail } : desc
+        );
+        updated[packageIndex] = pkg;
+      }
+      return updated;
+    });
+  };
+
+  const handleDeletePackage = (index: number) => {
+    const pkg = editingPackages[index];
+    if (pkg.id) {
+      setDeletedPackageIds((prev) => [...prev, pkg.id]);
+    }
+    setEditingPackages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAddNewPackage = () => {
+    const newPackage: Partial<Package> = {
+      id: `new-${Date.now()}`,
+      name: "",
+      numberOfPerson: 1,
+      title: "",
+      price: 0,
+      description: [],
+      isPopular: false,
+    };
+    setNewPackages((prev) => [...prev, newPackage]);
+  };
+
+  const handleEditNewPackage = (
+    index: number,
+    field: keyof Package,
+    value: string | number | boolean
+  ) => {
+    setNewPackages((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+      return updated;
+    });
+  };
+
+  const handleDeleteNewPackage = (index: number) => {
+    setNewPackages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAddDescriptionToNewPackage = (packageIndex: number) => {
+    setNewPackages((prev) => {
+      const updated = [...prev];
+      const pkg = { ...updated[packageIndex] };
+      const nextId =
+        (pkg.description?.length ?? 0) > 0
+          ? Math.max(...(pkg.description?.map((d) => d.id ?? 0) ?? [0])) + 1
+          : 1;
+      pkg.description = [
+        ...(pkg.description ?? []),
+        { id: nextId, detail: "" },
+      ];
+      updated[packageIndex] = pkg;
+      return updated;
+    });
+  };
+
+  const handleEditNewPackageDescription = (
+    packageIndex: number,
+    descIndex: number,
+    detail: string
+  ) => {
+    setNewPackages((prev) => {
+      const updated = [...prev];
+      const pkg = { ...updated[packageIndex] };
+      if (pkg.description) {
+        pkg.description = pkg.description.map((desc, idx) =>
+          idx === descIndex ? { ...desc, detail } : desc
+        );
+        updated[packageIndex] = pkg;
+      }
+      return updated;
+    });
+  };
+
+  const handleDeleteNewPackageDescription = (
+    packageIndex: number,
+    descIndex: number
+  ) => {
+    setNewPackages((prev) => {
+      const updated = [...prev];
+      const pkg = { ...updated[packageIndex] };
+      if (pkg.description) {
+        pkg.description = pkg.description.filter((_, idx) => idx !== descIndex);
+        updated[packageIndex] = pkg;
+      }
+      return updated;
+    });
+  };
+
   const handleSaveEdit = async () => {
     if (!editingTemple || !editFormData) return;
 
     try {
       const services = Services.getInstance();
-      await services.updateTemple(editingTemple._id, editFormData);
-      showNotification("✅ Temple updated successfully!");
+
+      // Prepare the update data with modified packages
+      const updateData: Partial<Temple> = {
+        ...editFormData,
+        packages: editingPackages,
+      };
+
+      // Call update API
+      await services.updateTemple(editingTemple._id, updateData);
+
+      // Delete packages that were marked for deletion
+      if (deletedPackageIds.length > 0) {
+        for (const packageId of deletedPackageIds) {
+          try {
+            await services.deletePackage(editingTemple._id, packageId);
+          } catch (err) {
+            console.error(`Error deleting package ${packageId}:`, err);
+          }
+        }
+      }
+
+      // Add new packages
+      if (newPackages.length > 0) {
+        for (const pkg of newPackages) {
+          try {
+            const packageData = {
+              name: pkg.name || "",
+              numberOfPerson: pkg.numberOfPerson || 1,
+              title: pkg.title || "",
+              price: pkg.price || 0,
+              description: pkg.description || [],
+              isPopular: pkg.isPopular || false,
+            };
+            await services.addPackage(editingTemple._id, packageData);
+          } catch (err) {
+            console.error("Error adding new package:", err);
+          }
+        }
+      }
+
+      showNotification("✅ Temple and packages updated successfully!");
       handleCloseModal();
     } catch (err) {
       console.error("Error updating temple:", err);
@@ -516,42 +684,371 @@ const Dashboard: React.FC = () => {
 
               {/* Packages */}
               <div className="modal-section">
-                <h3>Available Packages ({selectedTemple.packages.length})</h3>
-                <div className="modal-packages-grid">
-                  {selectedTemple.packages.map((pkg) => (
-                    <div
-                      key={pkg.id}
-                      className={`modal-package-card ${
-                        pkg.isPopular ? "popular" : ""
-                      }`}
-                    >
-                      <div className="modal-package-header">
-                        <h4>{pkg.name}</h4>
-                        {pkg.isPopular && (
-                          <span className="popular-badge">Popular</span>
-                        )}
-                      </div>
-                      <p className="modal-package-title">{pkg.title}</p>
-                      <div className="modal-package-pricing">
-                        <span className="modal-price">
-                          ₹{pkg.price.toLocaleString()}
-                        </span>
-                        <span className="modal-persons">
-                          {pkg.numberOfPerson} person
-                          {pkg.numberOfPerson > 1 ? "s" : ""}
-                        </span>
-                      </div>
-                      <div className="modal-package-features">
-                        {pkg.description.map((desc) => (
-                          <div key={desc.id} className="modal-feature-item">
-                            <span className="modal-feature-icon">✓</span>
-                            <span>{desc.detail}</span>
+                <h3>
+                  Available Packages (
+                  {isEditMode
+                    ? editingPackages.length + newPackages.length
+                    : selectedTemple.packages.length}
+                  )
+                </h3>
+
+                {isEditMode ? (
+                  <div className="edit-packages-section">
+                    {/* Existing Packages */}
+                    {editingPackages.length > 0 && (
+                      <div className="existing-packages">
+                        <h4>Existing Packages</h4>
+                        {editingPackages.map((pkg, index) => (
+                          <div key={pkg.id} className="edit-package-form">
+                            <div className="edit-package-header">
+                              <span className="package-index">
+                                Package {index + 1}
+                              </span>
+                              <button
+                                className="delete-package-btn"
+                                onClick={() => handleDeletePackage(index)}
+                              >
+                                🗑️ Delete
+                              </button>
+                            </div>
+
+                            <div className="form-group">
+                              <label className="form-label">
+                                Package Name:
+                              </label>
+                              <input
+                                type="text"
+                                className="form-input"
+                                value={pkg.name || ""}
+                                onChange={(e) =>
+                                  handleEditPackage(
+                                    index,
+                                    "name",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+
+                            <div className="form-group">
+                              <label className="form-label">Title:</label>
+                              <input
+                                type="text"
+                                className="form-input"
+                                value={pkg.title || ""}
+                                onChange={(e) =>
+                                  handleEditPackage(
+                                    index,
+                                    "title",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+
+                            <div className="form-row">
+                              <div className="form-group">
+                                <label className="form-label">Price:</label>
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  value={pkg.price || 0}
+                                  onChange={(e) =>
+                                    handleEditPackage(
+                                      index,
+                                      "price",
+                                      parseFloat(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <label className="form-label">
+                                  Number of Persons:
+                                </label>
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  value={pkg.numberOfPerson || 1}
+                                  onChange={(e) =>
+                                    handleEditPackage(
+                                      index,
+                                      "numberOfPerson",
+                                      parseInt(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+
+                            <div className="form-group">
+                              <label className="form-label">
+                                <input
+                                  type="checkbox"
+                                  checked={pkg.isPopular || false}
+                                  onChange={(e) =>
+                                    handleEditPackage(
+                                      index,
+                                      "isPopular",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                                Mark as Popular
+                              </label>
+                            </div>
+
+                            <div className="form-group">
+                              <label className="form-label">
+                                Descriptions:
+                              </label>
+                              <div className="descriptions-list">
+                                {pkg.description &&
+                                pkg.description.length > 0 ? (
+                                  pkg.description.map((desc, descIndex) => (
+                                    <div
+                                      key={desc.id}
+                                      className="description-item"
+                                    >
+                                      <input
+                                        type="text"
+                                        className="form-input"
+                                        value={desc.detail || ""}
+                                        onChange={(e) =>
+                                          handleEditPackageDescription(
+                                            index,
+                                            descIndex,
+                                            e.target.value
+                                          )
+                                        }
+                                        placeholder="Feature description"
+                                      />
+                                    </div>
+                                  ))
+                                ) : (
+                                  <p className="no-descriptions">
+                                    No descriptions added
+                                  </p>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    )}
+
+                    {/* New Packages */}
+                    {newPackages.length > 0 && (
+                      <div className="new-packages">
+                        <h4>New Packages</h4>
+                        {newPackages.map((pkg, index) => (
+                          <div
+                            key={pkg.id}
+                            className="edit-package-form new-package"
+                          >
+                            <div className="edit-package-header">
+                              <span className="package-index">
+                                New Package {index + 1}
+                              </span>
+                              <button
+                                className="delete-package-btn"
+                                onClick={() => handleDeleteNewPackage(index)}
+                              >
+                                🗑️ Delete
+                              </button>
+                            </div>
+
+                            <div className="form-group">
+                              <label className="form-label">
+                                Package Name:
+                              </label>
+                              <input
+                                type="text"
+                                className="form-input"
+                                value={pkg.name || ""}
+                                onChange={(e) =>
+                                  handleEditNewPackage(
+                                    index,
+                                    "name",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+
+                            <div className="form-group">
+                              <label className="form-label">Title:</label>
+                              <input
+                                type="text"
+                                className="form-input"
+                                value={pkg.title || ""}
+                                onChange={(e) =>
+                                  handleEditNewPackage(
+                                    index,
+                                    "title",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+
+                            <div className="form-row">
+                              <div className="form-group">
+                                <label className="form-label">Price:</label>
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  value={pkg.price || 0}
+                                  onChange={(e) =>
+                                    handleEditNewPackage(
+                                      index,
+                                      "price",
+                                      parseFloat(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <label className="form-label">
+                                  Number of Persons:
+                                </label>
+                                <input
+                                  type="number"
+                                  className="form-input"
+                                  value={pkg.numberOfPerson || 1}
+                                  onChange={(e) =>
+                                    handleEditNewPackage(
+                                      index,
+                                      "numberOfPerson",
+                                      parseInt(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+
+                            <div className="form-group">
+                              <label className="form-label">
+                                <input
+                                  type="checkbox"
+                                  checked={pkg.isPopular || false}
+                                  onChange={(e) =>
+                                    handleEditNewPackage(
+                                      index,
+                                      "isPopular",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                                Mark as Popular
+                              </label>
+                            </div>
+
+                            <div className="form-group">
+                              <label className="form-label">
+                                Descriptions:
+                              </label>
+                              <div className="descriptions-list">
+                                {pkg.description &&
+                                pkg.description.length > 0 ? (
+                                  pkg.description.map((desc, descIndex) => (
+                                    <div
+                                      key={desc.id}
+                                      className="description-item"
+                                    >
+                                      <input
+                                        type="text"
+                                        className="form-input"
+                                        value={desc.detail || ""}
+                                        onChange={(e) =>
+                                          handleEditNewPackageDescription(
+                                            index,
+                                            descIndex,
+                                            e.target.value
+                                          )
+                                        }
+                                        placeholder="Feature description"
+                                      />
+                                      <button
+                                        className="delete-desc-btn"
+                                        onClick={() =>
+                                          handleDeleteNewPackageDescription(
+                                            index,
+                                            descIndex
+                                          )
+                                        }
+                                      >
+                                        ✕
+                                      </button>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <p className="no-descriptions">
+                                    No descriptions added
+                                  </p>
+                                )}
+                              </div>
+                              <button
+                                className="add-desc-btn"
+                                onClick={() =>
+                                  handleAddDescriptionToNewPackage(index)
+                                }
+                              >
+                                + Add Description
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Add New Package Button */}
+                    <button
+                      className="add-package-btn"
+                      onClick={handleAddNewPackage}
+                    >
+                      + Add New Package
+                    </button>
+                  </div>
+                ) : (
+                  <div className="modal-packages-grid">
+                    {selectedTemple.packages.map((pkg) => (
+                      <div
+                        key={pkg.id}
+                        className={`modal-package-card ${
+                          pkg.isPopular ? "popular" : ""
+                        }`}
+                      >
+                        <div className="modal-package-header">
+                          <h4>{pkg.name}</h4>
+                          {pkg.isPopular && (
+                            <span className="popular-badge">Popular</span>
+                          )}
+                        </div>
+                        <p className="modal-package-title">{pkg.title}</p>
+                        <div className="modal-package-pricing">
+                          <span className="modal-price">
+                            ₹{pkg.price.toLocaleString()}
+                          </span>
+                          <span className="modal-persons">
+                            {pkg.numberOfPerson} person
+                            {pkg.numberOfPerson > 1 ? "s" : ""}
+                          </span>
+                        </div>
+                        <div className="modal-package-features">
+                          {pkg.description.map((desc) => (
+                            <div key={desc.id} className="modal-feature-item">
+                              <span className="modal-feature-icon">✓</span>
+                              <span>{desc.detail}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

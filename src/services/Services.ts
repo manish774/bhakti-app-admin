@@ -5,6 +5,7 @@ import type {
   PujaType,
   Temple,
   ApiResponse,
+  Package,
 } from "../types/api";
 
 class Services {
@@ -54,6 +55,35 @@ class Services {
 
   public async deleteTemple(templeId: string): Promise<{ success: boolean }> {
     const response = await apiClient.delete(`/api/admin/temples/${templeId}`);
+
+    // Emit event to notify dashboard of data change
+    DashboardEventEmitter.getInstance().emit("templesUpdated");
+
+    return response.data;
+  }
+
+  public async addPackage(
+    templeId: string,
+    packageData: Omit<Package, "id">
+  ): Promise<Temple> {
+    const response = await apiClient.post(
+      `/api/admin/temples/${templeId}/packages`,
+      packageData
+    );
+
+    // Emit event to notify dashboard of data change
+    DashboardEventEmitter.getInstance().emit("templesUpdated");
+
+    return response.data;
+  }
+
+  public async deletePackage(
+    templeId: string,
+    packageId: string
+  ): Promise<{ success: boolean }> {
+    const response = await apiClient.delete(
+      `/api/admin/temples/${templeId}/packages/${packageId}`
+    );
 
     // Emit event to notify dashboard of data change
     DashboardEventEmitter.getInstance().emit("templesUpdated");
