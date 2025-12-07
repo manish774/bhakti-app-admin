@@ -8,6 +8,7 @@ interface TempleFormData {
   name: string;
   location: string;
   image: string;
+  description: string[];
   packages: Package[];
   prasadDelivery: {
     included: boolean;
@@ -38,6 +39,7 @@ const TempleForm: React.FC = () => {
     name: "",
     location: "",
     image: "",
+    description: [""],
     packages: [
       {
         id: "pkg1",
@@ -170,6 +172,30 @@ const TempleForm: React.FC = () => {
     });
   };
 
+  const addTemplateDescription = () => {
+    setFormData((prev) => ({
+      ...prev,
+      description: [...prev.description, ""],
+    }));
+  };
+
+  const removeTempleDescription = (index: number) => {
+    if (formData.description.length > 1) {
+      setFormData((prev) => ({
+        ...prev,
+        description: prev.description.filter((_, i) => i !== index),
+      }));
+    }
+  };
+
+  const updateTempleDescription = (index: number, value: string) => {
+    setFormData((prev) => {
+      const newDescription = [...prev.description];
+      newDescription[index] = value;
+      return { ...prev, description: newDescription };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -269,6 +295,41 @@ const TempleForm: React.FC = () => {
               required
               placeholder="e.g., 4:00 AM - 11:00 PM"
             />
+          </div>
+
+          <div className="description-section">
+            <div className="section-header">
+              <label>Temple Description</label>
+              <button
+                type="button"
+                onClick={addTemplateDescription}
+                className="add-button small"
+              >
+                + Add Description
+              </button>
+            </div>
+
+            {formData.description.map((desc, descIndex) => (
+              <div key={descIndex} className="description-item">
+                <textarea
+                  value={desc}
+                  onChange={(e) =>
+                    updateTempleDescription(descIndex, e.target.value)
+                  }
+                  placeholder="Enter temple description point"
+                  rows={2}
+                />
+                {formData.description.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeTempleDescription(descIndex)}
+                    className="remove-button small"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
