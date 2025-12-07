@@ -36,3 +36,5 @@ jobs:
 
             echo "✅ Admin deployment complete!"
             echo "🌐 Visit: https://admin.jalsuvidha.com"
+
+            pm2 restart bhakti-admin
