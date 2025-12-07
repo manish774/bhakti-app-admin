@@ -1,13 +1,13 @@
 import React, { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import "./Login.css";
 import Services from "../../services/Services";
 import { useUser } from "../../context/UserContext";
 const Login = () => {
   const ctx = useUser();
-  const navigate = useNavigate();
+
   const [loginDetails, setLoginDetails] = React.useState({
     email: "manishranbir774@gmail.com",
-    password: "Querty&e@1",
+    password: "Hello1*#",
   });
 
   const service = useMemo(() => Services.getInstance(), []);
@@ -28,33 +28,42 @@ const Login = () => {
           isLoading: false,
         },
       });
-      console.log(userData);
-      // Navigate to home after successful login
-      navigate("/home");
+      console.log("login success userData:", userData);
+      // Navigate to home after successful login.
+      // Delay navigation by a microtask to ensure context state is updated
+      // before ProtectedRoute checks it (avoids immediate redirect back).
+      window.location.reload();
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Email"
-        onChange={(e) =>
-          setLoginDetails({ ...loginDetails, email: e.target.value })
-        }
-        defaultValue={loginDetails.email}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) =>
-          setLoginDetails({ ...loginDetails, password: e.target.value })
-        }
-        defaultValue={loginDetails.password}
-      />
-      <button onClick={handleLogin}>Login</button>
+    <div className="login-page">
+      <div className="login-card">
+        <h2 className="login-title">Admin Login</h2>
+        <input
+          className="login-input"
+          type="text"
+          placeholder="Email"
+          onChange={(e) =>
+            setLoginDetails({ ...loginDetails, email: e.target.value })
+          }
+          defaultValue={loginDetails.email}
+        />
+        <input
+          className="login-input"
+          type="password"
+          placeholder="Password"
+          onChange={(e) =>
+            setLoginDetails({ ...loginDetails, password: e.target.value })
+          }
+          defaultValue={loginDetails.password}
+        />
+        <button className="login-button" onClick={handleLogin}>
+          Login
+        </button>
+      </div>
     </div>
   );
 };
