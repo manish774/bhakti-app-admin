@@ -3,24 +3,36 @@ name: Deploy Admin App
 on:
   push:
     branches:
-      - main  # Change to 'master' if that's your branch
+      - main # Change to 'master' if needed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Deploy to VPS
+      - name: Deploy to VPS via SSH with Password
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          password: ${{ secrets.VPS_PASSWORD }}
           script: |
+            echo "🚀 Starting deployment..."
+
             cd /var/www/jalsuvidha-admin/bhakti-app-admin
+
+            echo "📥 Pulling latest changes..."
             git pull origin main
+
+            echo "📦 Installing dependencies..."
             npm install
+
+            echo "🔨 Building project..."
             npm run build
+
+            echo "🔐 Setting permissions..."
             chown -R www-data:www-data /var/www/jalsuvidha-admin
             chmod -R 755 /var/www/jalsuvidha-admin
+
             echo "✅ Admin deployment complete!"
+            echo "🌐 Visit: https://admin.jalsuvidha.com"
