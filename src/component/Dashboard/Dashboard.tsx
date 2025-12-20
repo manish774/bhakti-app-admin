@@ -105,13 +105,6 @@ const Dashboard: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const updateImages = async (e: React.MouseEvent, temple: Temple) => {
-    setImageEditMode(true);
-    // await services.updateTemple(temple._id, {
-    //   image: imageUploadRes.filename,
-    // });
-  };
-
   const handleDeleteTemple = async (e: React.MouseEvent, templeId: string) => {
     e.stopPropagation(); // Prevent card click
     setDeleteConfirm(templeId);
@@ -489,7 +482,9 @@ const Dashboard: React.FC = () => {
                     </button>
                     <button
                       className="image-update-btn"
-                      onClick={(e) => updateImages(e, temple)}
+                      onClick={() => {
+                        setImageEditMode(true);
+                      }}
                       title="Update Images"
                     >
                       🖼️
