@@ -184,5 +184,59 @@ class Services {
       return null;
     }
   }
+
+  async uploadSingleImage(
+    file: File
+  ): Promise<{ url: string; filename: string }> {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const response = await apiClient.post("/api/upload/single", formData, {
+      headers: {
+        // allow axios/browser to set multipart boundary automatically
+        "Content-Type": undefined as unknown as string,
+      },
+      withCredentials: true,
+    });
+
+    // Support different response shapes (raw body or wrapped in `data`)
+    const payload = response.data?.data ?? response.data;
+    const uploadedFile = payload?.file ?? payload;
+    if (!uploadedFile) {
+      throw new Error("Invalid upload response");
+    }
+
+    return {
+      url: uploadedFile.url,
+      filename: uploadedFile.filename,
+    };
+  }
+
+  async uploadMultipleImages(
+    files: File[]
+  ): Promise<Array<{ url: string; filename: string }>> {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    const response = await apiClient.post("/api/upload/multiple", formData, {
+      headers: {
+        "Content-Type": undefined as unknown as string,
+      },
+      withCredentials: true,
+    });
+
+    const payload = response.data?.data ?? response.data;
+    const uploadedFiles = payload?.files ?? payload;
+    if (!Array.isArray(uploadedFiles)) {
+      throw new Error("Invalid upload response");
+    }
+
+    return uploadedFiles.map((f: any) => ({
+      url: f.url,
+      filename: f.filename,
+    }));
+  }
 }
 export default Services;

@@ -3,6 +3,7 @@ import Services from "../../services/Services";
 import DashboardEventEmitter from "../../services/DashboardEvents";
 import type { Temple, Package } from "../../types/api";
 import "./Dashboard.css";
+import ImageUpload from "../TempleForm/ImageUpload";
 
 const Dashboard: React.FC = () => {
   const [temples, setTemples] = useState<Temple[]>([]);
@@ -19,7 +20,10 @@ const Dashboard: React.FC = () => {
   const [editingPackages, setEditingPackages] = useState<Package[]>([]);
   const [newPackages, setNewPackages] = useState<Partial<Package>[]>([]);
   const [deletedPackageIds, setDeletedPackageIds] = useState<string[]>([]);
+  const [imageEditMode, setImageEditMode] = useState<boolean>(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const services = Services.getInstance();
   const fetchTemples = async () => {
     try {
       setLoading(true);
@@ -80,6 +84,7 @@ const Dashboard: React.FC = () => {
     setSelectedTemple(null);
     setIsEditMode(false);
     setEditingTemple(null);
+    setImageEditMode(false);
   };
 
   const handleEditTemple = (e: React.MouseEvent, temple: Temple) => {
@@ -100,6 +105,13 @@ const Dashboard: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  const updateImages = async (e: React.MouseEvent, temple: Temple) => {
+    setImageEditMode(true);
+    // await services.updateTemple(temple._id, {
+    //   image: imageUploadRes.filename,
+    // });
+  };
+
   const handleDeleteTemple = async (e: React.MouseEvent, templeId: string) => {
     e.stopPropagation(); // Prevent card click
     setDeleteConfirm(templeId);
@@ -107,7 +119,6 @@ const Dashboard: React.FC = () => {
 
   const confirmDelete = async (templeId: string) => {
     try {
-      const services = Services.getInstance();
       await services.deleteTemple(templeId);
       showNotification("🗑️ Temple deleted successfully!");
       setDeleteConfirm(null);
@@ -348,6 +359,13 @@ const Dashboard: React.FC = () => {
       </div>
     );
   }
+  const handleUpload = async (templeId: string) => {
+    const imageUploadRes = await services.uploadSingleImage(imageFile!);
+
+    await services.updateTemple(templeId, {
+      image: imageUploadRes.filename,
+    });
+  };
 
   return (
     <div className="dashboard">
@@ -470,6 +488,13 @@ const Dashboard: React.FC = () => {
                       ✏️
                     </button>
                     <button
+                      className="image-update-btn"
+                      onClick={(e) => updateImages(e, temple)}
+                      title="Update Images"
+                    >
+                      🖼️
+                    </button>
+                    <button
                       className="delete-btn"
                       onClick={(e) => handleDeleteTemple(e, temple._id)}
                       title="Delete Temple"
@@ -486,7 +511,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Temple Details Modal */}
-      {isModalOpen && selectedTemple && (
+      {isModalOpen && selectedTemple && !imageEditMode && isEditMode && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
@@ -514,6 +539,141 @@ const Dashboard: React.FC = () => {
 
             <div className="modal-body">
               {/* Temple Details */}
+              <div className="modal-section">
+                <h3>Temple Information</h3>
+                {isEditMode ? (
+                  <div className="edit-form">
+                    <div className="form-group">
+                      <label className="form-label">Temple Name:</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={editFormData.name || ""}
+                        onChange={(e) =>
+                          handleEditFormChange("name", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Location:</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={editFormData.location || ""}
+                        onChange={(e) =>
+                          handleEditFormChange("location", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Famous For:</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={editFormData.extraInfo?.famousFor || ""}
+                        onChange={(e) =>
+                          handleNestedEditChange(
+                            "extraInfo",
+                            "famousFor",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Temple Timing:</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={editFormData.extraInfo?.templeTiming || ""}
+                        onChange={(e) =>
+                          handleNestedEditChange(
+                            "extraInfo",
+                            "templeTiming",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Pandit Name:</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={editFormData.pandit?.name || ""}
+                        onChange={(e) =>
+                          handleNestedEditChange(
+                            "pandit",
+                            "name",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">About Pandit:</label>
+                      <textarea
+                        className="form-textarea"
+                        value={editFormData.pandit?.about || ""}
+                        onChange={(e) =>
+                          handleNestedEditChange(
+                            "pandit",
+                            "about",
+                            e.target.value
+                          )
+                        }
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="temple-details-grid">
+                    <div className="detail-item">
+                      <span className="detail-label">Location:</span>
+                      <span className="detail-value">
+                        {selectedTemple.location}
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Famous For:</span>
+                      <span className="detail-value">
+                        {selectedTemple.extraInfo.famousFor}
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Timing:</span>
+                      <span className="detail-value">
+                        {selectedTemple.extraInfo.templeTiming}
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Phone:</span>
+                      <span className="detail-value">
+                        {selectedTemple.extraInfo.contact.phone}
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Email:</span>
+                      <span className="detail-value">
+                        {selectedTemple.extraInfo.contact.email}
+                      </span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Website:</span>
+                      <a
+                        href={selectedTemple.extraInfo.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="detail-link"
+                      >
+                        {selectedTemple.extraInfo.website}
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Update images */}
               <div className="modal-section">
                 <h3>Temple Information</h3>
                 {isEditMode ? (
@@ -1050,6 +1210,23 @@ const Dashboard: React.FC = () => {
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isModalOpen && selectedTemple && imageEditMode && !isEditMode && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{isEditMode ? "✏️ Edit Temple" : selectedTemple.name}</h2>
+              <div className="modal-actions"></div>
+            </div>
+            <div className="modal-body">
+              <ImageUpload onFileSelect={setImageFile} />
+              <button onClick={() => handleUpload(selectedTemple._id)}>
+                Upload
+              </button>
             </div>
           </div>
         </div>

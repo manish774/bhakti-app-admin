@@ -4,7 +4,7 @@ This document provides multiple solutions to fix CORS (Cross-Origin Resource Sha
 
 ## Current Configuration
 
-Your API is hosted at: `https://api.jalsuvidha.com`
+Your API is hosted at: `https://api.jalsuvidha.com/`
 Your frontend runs on: `http://localhost:5173` (development)
 
 ## Solutions Implemented
@@ -35,7 +35,7 @@ export default defineConfig({
 server: {
   proxy: {
     '/api': {
-      target: 'https://api.jalsuvidha.com',
+      target: 'https://api.jalsuvidha.com/',
       changeOrigin: true,
       secure: true, // Use true for HTTPS
       rewrite: (path) => path.replace(/^\/api/, '')
@@ -57,7 +57,7 @@ server: {
 **File:** `.env`
 
 ```properties
-VITE_API_BASE_URL=https://api.jalsuvidha.com
+VITE_API_BASE_URL=https://api.jalsuvidha.com/
 ```
 
 ### 4. ✅ TypeScript Types
@@ -110,7 +110,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://api.jalsuvidha.com",
+        target: "https://api.jalsuvidha.com/",
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
@@ -141,7 +141,7 @@ export default defineConfig({
 
 ```typescript
 const apiClient = axios.create({
-  baseURL: "https://api.jalsuvidha.com",
+  baseURL: "https://api.jalsuvidha.com/",
   headers: {
     "Content-Type": "application/json",
   },
@@ -179,7 +179,7 @@ fetch("/api/admin/temples")
 
 ```properties
 # .env.production
-VITE_API_BASE_URL=https://api.jalsuvidha.com
+VITE_API_BASE_URL=https://api.jalsuvidha.com/
 ```
 
 ### Build Configuration
@@ -193,7 +193,7 @@ export default defineConfig(({ mode }) => ({
       ? {
           proxy: {
             "/api": {
-              target: "https://api.jalsuvidha.com",
+              target: "https://api.jalsuvidha.com/",
               changeOrigin: true,
               secure: true,
               rewrite: (path) => path.replace(/^\/api/, ""),
@@ -240,7 +240,7 @@ export default defineConfig(({ mode }) => ({
 3. **Test Direct API Call:**
    ```bash
    # Test API directly
-   curl -X GET https://api.jalsuvidha.com/admin/temples
+   curl -X GET https://api.jalsuvidha.com//admin/temples
    ```
 
 ## Next Steps
