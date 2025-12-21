@@ -4,6 +4,7 @@ import DashboardEventEmitter from "../../services/DashboardEvents";
 import type { Temple, Package } from "../../types/api";
 import "./Dashboard.css";
 import ImageUpload from "../TempleForm/ImageUpload";
+import DashboardHeader from "./DashboardHeader";
 
 const Dashboard: React.FC = () => {
   const [temples, setTemples] = useState<Temple[]>([]);
@@ -365,144 +366,131 @@ const Dashboard: React.FC = () => {
       {/* Notification */}
       {notification && <div className="notification">{notification}</div>}
 
-      {/* Enhanced Header with Modern Stats */}
-      <div className="dashboard-header">
-        <div className="header-content">
-          <h1>Temple Dashboard (Bhakti App)</h1>
-          <p>Manage and view all temple listings with ease</p>
-          <div className="dashboard-actions">
-            <button
-              className="refresh-btn"
-              onClick={refreshData}
-              disabled={loading}
-            >
-              {loading ? "🔄 Refreshing..." : "🔄 Refresh Data"}
-            </button>
-            <span className="last-updated">
-              Last updated: {lastUpdated.toLocaleTimeString()}
-            </span>
-          </div>
-        </div>
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon">🏛️</div>
-            <div className="stat-content">
-              <span className="stat-number">{temples.length}</span>
-              <span className="stat-label">Total Temples</span>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">📦</div>
-            <div className="stat-content">
-              <span className="stat-number">
-                {temples.reduce(
-                  (acc, temple) => acc + temple.packages.length,
-                  0
-                )}
-              </span>
-              <span className="stat-label">Total Packages</span>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">💰</div>
-            <div className="stat-content">
-              <span className="stat-number">
-                ₹
-                {temples
-                  .reduce(
-                    (acc, temple) =>
-                      acc +
-                      temple.packages.reduce((sum, pkg) => sum + pkg.price, 0),
-                    0
-                  )
-                  .toLocaleString()}
-              </span>
-              <span className="stat-label">Total Value</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DashboardHeader
+        totalTemples={temples.length}
+        totalPackages={temples.reduce(
+          (acc, temple) => acc + temple.packages.length,
+          0
+        )}
+        totalValue={temples.reduce(
+          (acc, temple) =>
+            acc + temple.packages.reduce((sum, pkg) => sum + pkg.price, 0),
+          0
+        )}
+        lastUpdated={lastUpdated}
+        loading={loading}
+        onRefresh={refreshData}
+      />
 
-      {/* Compact Temple Cards Grid */}
-      <div className="temples-container">
-        {temples.map((temple) => {
-          const minPrice = Math.min(...temple.packages.map((pkg) => pkg.price));
-          const maxPrice = Math.max(...temple.packages.map((pkg) => pkg.price));
-          const popularPackages = temple.packages.filter(
-            (pkg) => pkg.isPopular
-          ).length;
+      <div className="table-container">
+        <div className="table-wrapper">
+          <table className="temples-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Temple Name</th>
+                <th>Location</th>
+                <th>Pandit</th>
+                <th>Packages</th>
+                <th>Price Range</th>
+                <th>Popular</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {temples.map((temple) => {
+                const minPrice = Math.min(
+                  ...temple.packages.map((pkg) => pkg.price)
+                );
+                const maxPrice = Math.max(
+                  ...temple.packages.map((pkg) => pkg.price)
+                );
+                const popularPackages = temple.packages.filter(
+                  (pkg) => pkg.isPopular
+                ).length;
 
-          return (
-            <div
-              key={temple._id}
-              className="temple-card-small"
-              onClick={() => handleTempleClick(temple)}
-            >
-              <div className="temple-card-header">
-                <div className="temple-icon">🏛️</div>
-                <div className="temple-basic-info">
-                  <h3 className="temple-name-small">{temple.name}</h3>
-                  <p className="temple-location-small">📍 {temple.location}</p>
-                </div>
-                {popularPackages > 0 && (
-                  <div className="popular-indicator">{popularPackages} ⭐</div>
-                )}
-              </div>
-
-              <div className="temple-card-content">
-                <div className="temple-summary">
-                  <div className="summary-item">
-                    <span className="summary-label">Packages</span>
-                    <span className="summary-value">
-                      {temple.packages.length}
-                    </span>
-                  </div>
-                  <div className="summary-item">
-                    <span className="summary-label">Price Range</span>
-                    <span className="summary-value">
+                return (
+                  <tr
+                    key={temple._id}
+                    onClick={() => handleTempleClick(temple)}
+                  >
+                    <td>
+                      <span className="temple-id">#{temple._id.slice(-6)}</span>
+                    </td>
+                    <td>
+                      <div className="temple-name-cell">
+                        <span className="temple-icon">🏛️</span>
+                        <strong>{temple.name}</strong>
+                      </div>
+                    </td>
+                    <td>{temple.location}</td>
+                    <td>{temple.pandit.name}</td>
+                    <td className="text-center">{temple.packages.length}</td>
+                    <td>
                       ₹{minPrice.toLocaleString()} - ₹
                       {maxPrice.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="summary-item">
-                    <span className="summary-label">Pandit</span>
-                    <span className="summary-value">{temple.pandit.name}</span>
-                  </div>
-                </div>
+                    </td>
+                    <td className="text-center">
+                      {popularPackages > 0 ? (
+                        <span className="popularity-badge very-high">
+                          {popularPackages} ⭐
+                        </span>
+                      ) : (
+                        <span className="popularity-badge low">-</span>
+                      )}
+                    </td>
+                    <td>
+                      <div className="action-buttons">
+                        <button
+                          className="btn-view"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTempleClick(temple);
+                          }}
+                          title="View Details"
+                        >
+                          👁️
+                        </button>
+                        <button
+                          className="btn-edit"
+                          onClick={(e) => handleEditTemple(e, temple)}
+                          title="Edit Temple"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="btn-image"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedTemple(temple);
+                            setImageEditMode(true);
+                            setIsModalOpen(true);
+                          }}
+                          title="Update Images"
+                        >
+                          🖼️
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={(e) => handleDeleteTemple(e, temple._id)}
+                          title="Delete Temple"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
 
-                <div className="temple-card-footer">
-                  <span className="view-details">Click to view details →</span>
-                  <div className="card-actions">
-                    <button
-                      className="edit-btn"
-                      onClick={(e) => handleEditTemple(e, temple)}
-                      title="Edit Temple"
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      className="image-update-btn"
-                      onClick={() => {
-                        setImageEditMode(true);
-                      }}
-                      title="Update Images"
-                    >
-                      🖼️
-                    </button>
-                    <button
-                      className="delete-btn"
-                      onClick={(e) => handleDeleteTemple(e, temple._id)}
-                      title="Delete Temple"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                  <span className="temple-id">#{temple._id.slice(-6)}</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {temples.length === 0 && (
+          <div className="empty-state">
+            <p>No temples found. Add your first temple to get started!</p>
+          </div>
+        )}
       </div>
 
       {/* Temple Details Modal */}

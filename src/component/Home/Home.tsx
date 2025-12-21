@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import Dashboard from "../Dashboard/Dashboard";
+import Sidebar from "../Sidebar/Sidebar";
+import "./Home.css";
 
 const Home = () => {
   const { state, dispatch } = useUser();
@@ -81,8 +83,10 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Dashboard Content */}
-      <Dashboard />
+      <div className={"home-container"}>
+        <Sidebar />
+        <Dashboard />
+      </div>
     </div>
   );
 };

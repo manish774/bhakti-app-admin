@@ -1,0 +1,21 @@
+.home-container {
+  display: flex;
+  height: calc(100vh - 80px); /* Subtract header height */
+  overflow: hidden;
+}
+
+/* Make sidebar fixed */
+.home-container > :first-child {
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* Make dashboard scrollable */
+.home-container > :last-child {
+  flex: 1;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+}
