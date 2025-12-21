@@ -64,9 +64,9 @@ const Dashboard: React.FC = () => {
     eventEmitter.on("templesUpdated", handleTempleUpdate);
 
     // Set up polling to check for updates every 30 seconds
-    const interval = setInterval(() => {
-      fetchTemples();
-    }, 30000);
+    // const interval = setInterval(() => {
+    //   fetchTemples();
+    // }, 30000);
 
     return () => {
       clearInterval(interval);
