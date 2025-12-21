@@ -353,7 +353,7 @@ const Dashboard: React.FC = () => {
     );
   }
   const handleUpload = async (templeId: string) => {
-    const imageUploadRes = await services.uploadSingleImage(imageFile!);
+    const imageUploadRes = await services.addImage(imageFile!, templeId);
 
     await services.updateTemple(templeId, {
       image: imageUploadRes.filename,
@@ -1219,7 +1219,9 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="modal-body">
               <ImageUpload onFileSelect={setImageFile} />
-              <button onClick={() => handleUpload(selectedTemple._id)}>
+              <button
+                onClick={async () => await handleUpload(selectedTemple._id)}
+              >
                 Upload
               </button>
             </div>

@@ -47,9 +47,6 @@ class Services {
       templeData
     );
 
-    // Emit event to notify dashboard of data change
-    DashboardEventEmitter.getInstance().emit("templesUpdated");
-
     return response.data;
   }
 
@@ -237,6 +234,40 @@ class Services {
       url: f.url,
       filename: f.filename,
     }));
+  }
+
+  public async addImage(
+    file: File,
+    templeId?: string
+  ): Promise<{ url: string; filename: string }> {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const response = await apiClient.post(
+      templeId
+        ? `api/admin/temples/upload/single/${templeId}`
+        : `api/admin/temples/upload/single`,
+      formData,
+      {
+        headers: {
+          // allow axios/browser to set multipart boundary automatically
+          "Content-Type": undefined as unknown as string,
+        },
+        withCredentials: true,
+      }
+    );
+
+    // Support different response shapes (raw body or wrapped in `data`)
+    const payload = response.data?.data ?? response.data;
+    const uploadedFile = payload?.data ?? payload;
+    if (!uploadedFile) {
+      throw new Error("Invalid upload response");
+    }
+
+    return {
+      url: uploadedFile.url,
+      filename: uploadedFile.filename,
+    };
   }
 }
 export default Services;

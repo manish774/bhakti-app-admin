@@ -153,7 +153,7 @@ const TempleForm: React.FC = () => {
         image: "",
       });
 
-      const imageUploadRes = await services.uploadSingleImage(selectedImage!);
+      const imageUploadRes = await services.addImage(selectedImage!);
 
       console.log(templeResponse, imageUploadRes);
       //@ts-expect-error : ignore for now
