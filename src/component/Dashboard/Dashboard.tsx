@@ -68,10 +68,10 @@ const Dashboard: React.FC = () => {
     //   fetchTemples();
     // }, 30000);
 
-    return () => {
-      clearInterval(interval);
-      eventEmitter.off("templesUpdated", handleTempleUpdate);
-    };
+    // return () => {
+    //   clearInterval(interval);
+    //   eventEmitter.off("templesUpdated", handleTempleUpdate);
+    // };
   }, []);
 
   const handleTempleClick = (temple: Temple) => {
