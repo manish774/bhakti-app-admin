@@ -1,0 +1,135 @@
+/* Button Component - Old School Theme */
+.btn {
+  fontfamily: "Georgia", "Times New Roman", serif;
+  font-weight: 600;
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  margin: 2px;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Sizes */
+.btn-small {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+}
+
+.btn-medium {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 14px;
+}
+
+.btn-large {
+  height: 52px;
+  padding: 0 24px;
+  font-size: 15px;
+}
+
+/* Full Width */
+.btn-full-width {
+  width: 100%;
+}
+
+/* Variants */
+.btn-primary {
+  background: #1a1a1a;
+  color: #d4c4a8;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25),
+    -2px -2px 6px rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #000000;
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3),
+    -3px -3px 8px rgba(255, 255, 255, 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: #d4c4a8;
+  color: #000000;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25),
+    -2px -2px 6px rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #c4b498;
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3),
+    -3px -3px 8px rgba(255, 255, 255, 0.4);
+}
+
+.btn-secondary:active:not(:disabled) {
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(0);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #000000;
+  border: 2px solid #1a1a1a;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: #f5eed8;
+}
+
+.btn-outline:active:not(:disabled) {
+  background: #e8dcc4;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #000000;
+  border: none;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.btn-ghost:active:not(:disabled) {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Focus state */
+.btn:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn-large {
+    height: 48px;
+    font-size: 14px;
+  }
+
+  .btn-medium {
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .btn-small {
+    height: 32px;
+    font-size: 12px;
+  }
+}

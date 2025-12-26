@@ -1,0 +1,30 @@
+/* Styles for left position */
+.label-left {
+  display: inline-block;
+  text-align: left;
+}
+
+/* Styles for right position */
+.label-right {
+  display: inline-block;
+  text-align: right;
+}
+
+/* Styles for above position */
+.label-above {
+  display: block;
+  margin-bottom: 5px; /* Adjust as needed */
+}
+
+/* Styles for below position */
+.label-below {
+  display: block;
+  margin-top: 5px; /* Adjust as needed */
+}
+
+/* Additional styling for the input field */
+input {
+  /* Add common input styles here */
+  width: 200px; /* Adjust as needed */
+  margin-top: 5px; /* Adjust as needed */
+}

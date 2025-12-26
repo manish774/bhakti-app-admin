@@ -1,4 +1,114 @@
 body {
   padding: 0;
   margin: 0;
+  font-family: "Georgia", "Times New Roman", serif;
+  background: #d4c4a8;
+}
+
+/* Root layout */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background: #d4c4a8;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px; /* fixed sidebar width */
+  background: #1a1a1a; /* dark sidebar */
+  color: #d4c4a8;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 12px 0 24px 0;
+  border-bottom: 1px solid #3d3d3d;
+  margin-bottom: 20px;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #d4c4a8;
+  margin: 0;
+}
+
+.sidebar-nav {
+  flex: 1;
+}
+
+.nav-section {
+  margin-bottom: 24px;
+}
+
+.nav-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 8px;
+  padding-left: 12px;
+}
+
+/* Main area (Header + Content) */
+.dashboard-main {
+  flex: 1; /* take remaining width */
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* prevents overflow issues */
+}
+
+/* Header */
+.header {
+  height: 60px; /* fixed header height */
+  background: #e8dcc4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  color: #000000;
+}
+
+/* Content */
+.dashboard-content {
+  flex: 1; /* take remaining height */
+  padding: 24px;
+  background: #d4c4a8;
+  box-sizing: border-box;
+  color: #000000;
+  padding-bottom: -500px;
+}
+
+.sidebar a {
+  display: block;
+  color: #d4c4a8;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.sidebar a.active {
+  background: #000000;
+  color: #d4c4a8;
+}
+
+.sidebar a:hover {
+  background: #2d2d2d;
+  color: #e8dcc4;
+}
+
+.sidebar-footer {
+  padding-top: 16px;
+  border-top: 1px solid #3d3d3d;
+  font-size: 12px;
+  color: #888;
 }

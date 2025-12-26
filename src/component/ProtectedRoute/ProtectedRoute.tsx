@@ -1,21 +1,22 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 
-interface ProtectedRouteProps {
-  children: React.ReactNode;
-}
-
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+const ProtectedRoute = () => {
   const { state } = useUser();
 
-  // Check if user is logged in (has email)
-  const isLoggedIn = state.meta.email && state.meta.email.trim() !== "";
+  // ⛔ VERY IMPORTANT: wait for auth resolution
+  if (state.isLoading) {
+    return null; // or a spinner
+  }
+
+  const isLoggedIn =
+    Boolean(state?.meta?.email) && state.meta.email.trim() !== "";
 
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

@@ -1,0 +1,43 @@
+.badge-circle-container.large {
+  --size: 20px;
+  --font-size: 20px;
+}
+.badge-circle-container.medium {
+  --size: 15px;
+  --font-size: 15px;
+}
+.badge-circle-container.small {
+  --size: 10px;
+  --font-size: 10px;
+}
+.badge-circle-container.primary {
+  border: 1px solid gray;
+  background-color: var(--primary-color);
+}
+.badge-circle-container.warning {
+  border: 1px solid darkgoldenrod;
+  background-color: var(--warning-color);
+}
+.badge-circle-container.success {
+  border: 1px solid darkgreen;
+  background-color: var(--success-color);
+}
+.badge-circle-container.danger {
+  border: 1px solid darkred;
+  background-color: var(--danger-color);
+}
+.badge-circle-container {
+  padding: var(--size);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background-color: orange;
+  display: inline-block;
+  font-size: var(--font-size);
+  font-weight: 700;
+  color: white;
+}
+
+.badge-circle-container:not(:first-child) {
+  margin-left: -15px;
+}

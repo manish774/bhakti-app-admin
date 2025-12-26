@@ -17,7 +17,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   return (
     <div className="dashboard-header">
       <div className="header-content">
-        <h1>Temple Dashboard (Bhakti App)</h1>
+        <h5>Temple Dashboard (Bhakti App)</h5>
         <p>Manage and view all temple listings with ease</p>
 
         <div className="dashboard-actions">

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Services from "../../services/Services";
 import type { Package } from "../../types/api";
-import ImageUpload from "./ImageUpload";
+import ImageUpload from "../core/upload/ImageUpload";
 import BasicInfo from "./BasicInfo";
 import PanditInfo from "./PanditInfo";
 import ContactInfo from "./ContactInfo";

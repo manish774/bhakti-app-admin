@@ -27,10 +27,41 @@ class Services {
     return response.data?.data || response.data || [];
   }
 
+  addToFormData<T extends Record<string, any>>(obj: T): FormData {
+    const formData = new FormData();
+
+    const flatten = (data: any, prefix = "") => {
+      for (const [key, value] of Object.entries(data)) {
+        const formKey = prefix ? `${prefix}.${key}` : key;
+
+        if (value === null || value === undefined) {
+          formData.append(formKey, "");
+        } else if (Array.isArray(value)) {
+          value.forEach((item, index) => {
+            if (typeof item === "object" && item !== null) {
+              flatten(item, `${formKey}[${index}]`);
+            } else {
+              formData.append(`${formKey}[${index}]`, String(item));
+            }
+          });
+        } else if (typeof value === "object" && !(value instanceof Date)) {
+          flatten(value, formKey);
+        } else {
+          formData.append(formKey, String(value));
+        }
+      }
+    };
+
+    flatten(obj);
+    return formData;
+  }
+
   public async addTemple(
     templeData: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">
   ): Promise<Temple> {
-    const response = await apiClient.post("/api/admin/temples", templeData);
+    //const file = this.addToFormData(templeData, true);
+    const formData = this.addToFormData(templeData);
+    const response = await apiClient.post("/api/admin/temples", formData);
 
     // Emit event to notify dashboard of data change
     DashboardEventEmitter.getInstance().emit("templesUpdated");

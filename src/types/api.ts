@@ -59,8 +59,6 @@ export interface Temple {
   image: string;
   description: string[];
   packages: Package[];
-  prasadDelivery: PrasadDelivery;
-  pandit: Pandit;
   extraInfo: ExtraInfo;
   createdAt: string;
   updatedAt: string;

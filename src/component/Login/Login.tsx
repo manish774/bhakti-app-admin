@@ -1,38 +1,43 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import Services from "../../services/Services";
 import { useUser } from "../../context/UserContext";
+
 const Login = () => {
   const ctx = useUser();
+  const navigate = useNavigate();
 
   const [loginDetails, setLoginDetails] = React.useState({
     email: "manishranbir774@gmail.com",
     password: "Hello1*#",
   });
+  useEffect(() => {
+    if (ctx?.state.meta.email) {
+      navigate("/");
+    }
+  }, [ctx?.state.meta]);
 
   const service = useMemo(() => Services.getInstance(), []);
+
   const handleLogin = async () => {
     try {
       const result = await service.login(loginDetails);
-      const userData = (result.data as Record<string, unknown>)?._doc as Record<
-        string,
-        unknown
-      >;
+      const userData = (result.data as any)?._doc;
+
       ctx.dispatch({
         type: "loginDetails",
         payload: {
           meta: {
-            name: (userData?.name as string) || "",
-            email: (userData?.email as string) || "",
+            name: userData?.name || "",
+            email: userData?.email || "",
           },
           isLoading: false,
         },
       });
-      console.log("login success userData:", userData);
-      // Navigate to home after successful login.
-      // Delay navigation by a microtask to ensure context state is updated
-      // before ProtectedRoute checks it (avoids immediate redirect back).
-      window.location.reload();
+
+      // ✅ Redirect to dashboard
+      navigate("/", { replace: true });
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -42,24 +47,27 @@ const Login = () => {
     <div className="login-page">
       <div className="login-card">
         <h2 className="login-title">Admin Login</h2>
+
         <input
           className="login-input"
           type="text"
           placeholder="Email"
+          value={loginDetails.email}
           onChange={(e) =>
             setLoginDetails({ ...loginDetails, email: e.target.value })
           }
-          defaultValue={loginDetails.email}
         />
+
         <input
           className="login-input"
           type="password"
           placeholder="Password"
+          value={loginDetails.password}
           onChange={(e) =>
             setLoginDetails({ ...loginDetails, password: e.target.value })
           }
-          defaultValue={loginDetails.password}
         />
+
         <button className="login-button" onClick={handleLogin}>
           Login
         </button>
