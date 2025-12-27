@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { ColumnProps, tableConfig } from "../../Model/Default";
+import { useState, useEffect, useRef } from "react";
+import type { ColumnProps, tableConfig } from "../../Model/Default";
 import { generateRandomString } from "../../utils/Index";
 
 interface RowProps {
@@ -9,6 +9,7 @@ interface RowProps {
   columnNumber: number;
 }
 const TableRows = ({ record, column, config, columnNumber }: RowProps) => {
+  console.log(config, columnNumber);
   const [showRowOptions, setShowRowOptions] = useState<boolean>(false);
   const rowOptionsRef = useRef(null);
 

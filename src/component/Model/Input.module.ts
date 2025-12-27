@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 export interface InputProps<T> {
   onchangeHandler: (value: React.ChangeEvent<HTMLInputElement>) => any;
   type?: "number" | "text" | "email" | "file" | "checkbox" | "range";

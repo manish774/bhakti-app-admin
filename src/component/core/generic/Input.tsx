@@ -1,7 +1,7 @@
 import React, { useEffect, useState, forwardRef } from "react";
 import { useDebounce } from "../../hooks/hooks";
 import "./generic.scss";
-import { InputProps } from "../../Model/Input.module";
+import { type InputProps } from "../../Model/Input.module";
 
 const Input = forwardRef<HTMLInputElement, InputProps<string | number>>(
   (props, ref) => {
@@ -46,10 +46,6 @@ const Input = forwardRef<HTMLInputElement, InputProps<string | number>>(
       }
       setEventObject(e);
       setInputValue(e?.target?.value);
-    };
-
-    const labelPostionClass = () => {
-      props?.labelPosition === "left";
     };
 
     return (

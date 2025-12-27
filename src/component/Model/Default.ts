@@ -1,3 +1,5 @@
+import type { JSX } from "react";
+
 export type ThemeMode = "dark" | "light";
 export type size = "large" | "medium" | "small";
 export type theme = "primary" | "warning" | "success" | "danger";

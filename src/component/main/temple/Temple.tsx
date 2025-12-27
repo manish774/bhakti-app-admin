@@ -1,4 +1,3 @@
-import React from "react";
 import CreateTemple from "./CreateTemple";
 
 const Temple = () => {

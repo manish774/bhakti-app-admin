@@ -2,8 +2,8 @@ import {
   useState,
   createContext,
   useContext,
-  ReactNode,
-  CSSProperties,
+  type ReactNode,
+  type CSSProperties,
 } from "react";
 
 // Types

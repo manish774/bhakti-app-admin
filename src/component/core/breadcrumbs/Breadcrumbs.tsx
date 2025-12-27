@@ -1,5 +1,3 @@
-import React from "react";
-
 const Breadcrumbs = () => {
   const configs = [
     { label: "Home", navigate: "/l" },

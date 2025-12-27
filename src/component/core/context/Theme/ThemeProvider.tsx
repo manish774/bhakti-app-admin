@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { ThemeContext, themeTypes } from "./ThemeContext";
+import { useEffect, useState } from "react";
+import { ThemeContext, type themeTypes } from "./ThemeContext";
 
 const ThemeProvider = (props: any) => {
   const [theme, setTheme] = useState<themeTypes>("light");

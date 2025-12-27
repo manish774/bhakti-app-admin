@@ -1,4 +1,3 @@
-import React from "react";
 import "./Toggle.css";
 import { Input } from "../generic";
 const Toggle = ({ style, label, onToggle }: any) => {

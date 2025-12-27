@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Services from "../../../services/Services";
 import Table from "../../core/Table/Table";
 const TempleList = () => {

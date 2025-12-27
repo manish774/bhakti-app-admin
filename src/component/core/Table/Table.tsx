@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  Suspense,
-  useRef,
-} from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import {
   generateRandomString,
   selectSubarray,
@@ -15,11 +8,12 @@ import "../generic/Table/Table.scss";
 import "./Table.css";
 import { paginationOptions } from "../../utils/TableUtils";
 import { ASC, DESC } from "../../utils/Index";
-import { TableProps, ColumnProps, ThemeMode } from "../../Model/Default";
+import type { TableProps, ColumnProps, ThemeMode } from "../../Model/Default";
 import TableRows from "./TableRows";
 import { useDebounce } from "../../hooks/hooks";
 import TableHeader from "../generic/Table/TableHeader";
 import TableFooter from "../generic/Table/TableFooter";
+import Input from "../generic/Input";
 // import Input from "../generic/Input";
 
 const Table = ({ records, config, pageSize }: TableProps) => {

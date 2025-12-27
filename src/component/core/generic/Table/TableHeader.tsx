@@ -1,6 +1,5 @@
-import React from "react";
+import type { JSX } from "react";
 import Toggle from "../../Toggle/Toggle";
-import { TableProps } from "../../../Model/Default";
 
 interface TableHeaderProps {
   title?: string | JSX.Element;

@@ -1,5 +1,4 @@
-import React from "react";
-import { CircleBadgeProps } from "./BadgeModel";
+import type { CircleBadgeProps } from "./BadgeModel";
 import "./CircleBadge.scss";
 
 const CircleBadge = (props: CircleBadgeProps<string>) => {
@@ -12,7 +11,7 @@ const CircleBadge = (props: CircleBadgeProps<string>) => {
     title,
   } = props;
 
-  const colorCombination = [];
+  console.log(customColor, title);
   const mLabel = labels?.map((label) => (
     <span
       className={`badge-circle-container ${size} ${type}`}

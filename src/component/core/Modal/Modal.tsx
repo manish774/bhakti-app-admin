@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import "./Modal.scss";
 interface ModalState<T extends ReactNode> {
   isDialogOpen: boolean;

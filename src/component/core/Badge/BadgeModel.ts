@@ -1,4 +1,4 @@
-import { size, theme } from "../../Model/Default";
+import type { size, theme } from "../../Model/Default";
 
 export type BadgeProps<T> = {
   label: T;

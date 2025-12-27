@@ -50,10 +50,12 @@ const InputField: React.FC<InputFieldProps> = ({
 
       {type === "textarea" ? (
         <textarea
+          //@ts-expect-error ignore
           {...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
           style={inputStyle}
         />
       ) : type === "file" ? (
+        //@ts-expect-error: ignore
         <ImageUpload onFileSelect={rest.onChange} label="" />
       ) : (
         <input type={type} {...rest} style={inputStyle} />

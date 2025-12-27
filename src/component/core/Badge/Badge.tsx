@@ -1,7 +1,5 @@
-import React from "react";
 import "./Badge.css";
-import { createUseStyles } from "react-jss";
-import { BadgeProps } from "./BadgeModel";
+import type { BadgeProps } from "./BadgeModel";
 
 const Badge = (props: BadgeProps<string>) => {
   const {
@@ -12,6 +10,7 @@ const Badge = (props: BadgeProps<string>) => {
     theme = "primary",
     style,
   } = props;
+  console.log(bgColor);
   return (
     <span
       className={`badge ${size} ${theme}`}
