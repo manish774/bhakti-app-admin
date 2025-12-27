@@ -16,6 +16,7 @@ const TempleList = () => {
         records={[...record]}
         pageSize={5}
         config={{
+          paginationRequired: true,
           title: "tes",
           columns: [
             { name: "Name", id: "name", searchable: true },
