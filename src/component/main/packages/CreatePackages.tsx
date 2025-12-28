@@ -8,6 +8,7 @@ import Services from "../../../services/Services";
 import { formatPayload } from "../utils/util";
 import { Spinner } from "../../core/spinners/Spinner";
 import { useNotification } from "../../../context/Notification";
+import { usePackage } from "../../../services/Package/usePackage";
 
 type BasicInfoField = InputFieldProps & {
   render?: () => void;
@@ -17,7 +18,7 @@ const CreatePackages = () => {
   const service = Services.getInstance();
   const [isLoading, setLoading] = useState<boolean>();
   const notify = useNotification();
-
+  const { loading, createPackage } = usePackage({ autoFetch: false });
   const packageConfig: {
     basicInfo: BasicInfoField[];
   } = {
@@ -61,13 +62,19 @@ const CreatePackages = () => {
   const [formData, setFormData] = useState<Record<string, any>>({});
 
   console.log(formData);
-
+  const formatValue = (name: string, value: any) => {
+    if (name === "description") {
+      return value?.map((x, i) => ({ id: i, detail: x }));
+    }
+    return value;
+  };
   // Enhanced handleOnChange to handle both single values and arrays
   const handleOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     index: number,
-    isMultiple = false
+    pkg: InputFieldProps
   ) => {
+    const isMultiple = pkg.numberOfFields > 0;
     if (!e.target?.name) return;
 
     const { name, value, type } = e.target;
@@ -79,29 +86,22 @@ const CreatePackages = () => {
       return;
     }
 
-    // If index is provided, it's a multi-field input (numberOfFields > 1)
     if (isMultiple) {
       setFormData((prev) => {
         const currentArray = Array.isArray(prev[name]) ? [...prev[name]] : [];
-        currentArray[index] = value;
-        return { ...prev, [name]: currentArray };
+        currentArray[parseInt(e.target.getAttribute("aria-index"))] = value;
+        return { ...prev, [name]: formatValue(pkg.name, currentArray) };
       });
     } else {
-      // Single field input
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  };
-
-  // Helper function to get the field config for checking numberOfFields
-  const getFieldConfig = (fieldName: string) => {
-    return packageConfig.basicInfo.find((field) => field.name === fieldName);
   };
 
   const onSave = async () => {
     try {
       setLoading(true);
       const reqParam = formatPayload.call(formData);
-      await service.addTemple(reqParam);
+      await createPackage(reqParam);
       notify("Package Created Successfully!", "success");
     } catch (error: any) {
       const errorKeys = Object.keys(error.response?.data.error?.errors || {});
@@ -134,7 +134,7 @@ const CreatePackages = () => {
                         e: React.ChangeEvent<
                           HTMLInputElement | HTMLTextAreaElement
                         >
-                      ) => handleOnChange(e, idx, pkg?.numberOfFields > 0)}
+                      ) => handleOnChange(e, idx, pkg)}
                     />
                   );
                 }

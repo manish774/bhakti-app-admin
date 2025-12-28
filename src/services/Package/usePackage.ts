@@ -32,6 +32,20 @@ export const usePackage = ({ autoFetch = true }: { autoFetch: boolean }) => {
     }
   }, [controller]);
 
+  const createPackage = async (payload: PackageProps) => {
+    setState((prev) => ({ ...prev, loading: true }));
+    try {
+      const data = await controller.createPackage(payload);
+      console.log(data);
+      setState((prev) => ({ ...prev, loading: false }));
+    } catch (err) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: err instanceof Error ? err.message : "Failed to fetch packages",
+      }));
+    }
+  };
   const deletePackage = async () => {};
   const updatePackage = async () => {};
 
@@ -43,6 +57,7 @@ export const usePackage = ({ autoFetch = true }: { autoFetch: boolean }) => {
 
   return {
     ...state,
+    createPackage,
     fetchPackages,
     deletePackage,
     updatePackage,

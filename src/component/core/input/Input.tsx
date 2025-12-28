@@ -120,6 +120,7 @@ const InputField: React.FC<InputFieldProps> = ({
       return (
         <div key={index} style={{ position: "relative" }}>
           <textarea
+            aria-index={`${index}`}
             key={index}
             {...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
             onChange={(e) => onChange?.(e, index)}
@@ -152,6 +153,7 @@ const InputField: React.FC<InputFieldProps> = ({
       return (
         <div key={index} style={{ position: "relative", marginBottom: "8px" }}>
           <ImageUpload
+            aria-index={`${index}`}
             key={index}
             onFileSelect={(file) => onFileSelect?.([file], index)}
             label={`${
