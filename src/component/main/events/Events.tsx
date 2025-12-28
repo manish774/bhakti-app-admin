@@ -13,9 +13,7 @@ const Events = () => {
       name: "Name of Event",
     },
   ];
-  console.log(events);
 
-  console.log(events);
   if (loading) return <Spinner />;
   return (
     <div>
@@ -24,7 +22,7 @@ const Events = () => {
         records={[...events.data]}
         pageSize={5}
         config={{
-          title: <Button>Add New Event</Button>,
+          title: <Button>+ Add New Event</Button>,
           columns,
         }}
       />
