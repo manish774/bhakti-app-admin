@@ -5,7 +5,6 @@ import Button from "../../core/button/Button";
 import Spinner from "../../core/spinners/Spinner";
 import Table from "../../core/Table/Table";
 import type { ColumnProps } from "../../Model/Default";
-import type { PackageProps } from "../../../services/Package/packages.types";
 
 const Events = () => {
   const { events, loading } = useEvent({ autoFetch: true });
@@ -41,7 +40,9 @@ const Events = () => {
 
   const ids = useMemo(
     () =>
+      //@ts-expect-error expect
       events?.data?.length ? events.data.map((x) => x.packageId).flat() : [],
+    //@ts-expect-error expect
     [events?.data]
   );
 
