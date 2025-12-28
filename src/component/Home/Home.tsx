@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import Dashboard from "../Dashboard/Dashboard";
-import Sidebar from "../Sidebar/Sidebar";
 import "./Home.css";
 
 const Home = () => {
@@ -84,7 +83,7 @@ const Home = () => {
       </div>
 
       <div className={"home-container"}>
-        <Sidebar />
+        {/* <Sidebar isOpen={true}/> */}
         <Dashboard />
       </div>
     </div>

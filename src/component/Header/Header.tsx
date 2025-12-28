@@ -1,8 +1,16 @@
-const Header = () => {
+import "./Header.css";
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+const Header = ({ onMenuClick }: HeaderProps) => {
   return (
     <header className="header">
-      <h3>Admin Dashboard</h3>
-      <div>User Profile</div>
+      <button className="menu-btn" onClick={onMenuClick}>
+        ☰
+      </button>
+
+      <h3>Dashboard</h3>
     </header>
   );
 };

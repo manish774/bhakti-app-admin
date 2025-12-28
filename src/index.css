@@ -112,3 +112,103 @@ body {
   font-size: 12px;
   color: #888;
 }
+
+/* ===================================================== */
+/* Responsive / Mobile Friendly Styles */
+/* ===================================================== */
+
+/* Tablets & small laptops */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .header {
+    padding: 0 16px;
+  }
+
+  .dashboard-content {
+    padding: 16px !important;
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  /* Sidebar becomes top drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    height: 100vh;
+    width: 240px;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    padding-top: 60px; /* space for header */
+  }
+
+  /* When sidebar is open */
+  .sidebar.open {
+    left: 0;
+  }
+
+  /* Main area takes full width */
+  .dashboard-main {
+    width: 100%;
+  }
+
+  /* Header stays fixed */
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1100;
+  }
+
+  /* Content shifts below header */
+  .dashboard-content {
+    padding: 16px !important;
+    margin-top: 60px;
+  }
+
+  /* Overlay when sidebar is open */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 900;
+    display: none;
+  }
+
+  .sidebar-overlay.show {
+    display: block;
+  }
+}
+
+/* Very small devices */
+@media (max-width: 480px) {
+  .sidebar {
+    width: 220px;
+  }
+
+  .sidebar-title {
+    font-size: 18px;
+  }
+
+  .sidebar a {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .header {
+    padding: 0 12px;
+  }
+}

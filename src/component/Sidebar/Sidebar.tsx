@@ -1,23 +1,45 @@
 import { NavLink } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-const Sidebar = () => {
+
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const { state } = useUser();
+
   return (
-    <aside className="sidebar">
-      <NavLink to="/" end>
-        Dashboard
-      </NavLink>
-      {state.meta?.email ? (
-        <>
-          <NavLink to="/events">Events</NavLink>
-          <NavLink to="/temple">Temples</NavLink>
-          <NavLink to="/packages">Packages</NavLink>
-          <NavLink to="/settings">Settings</NavLink>
-        </>
-      ) : (
-        <></>
-      )}
-    </aside>
+    <>
+      {/* Overlay */}
+      <div
+        className={`sidebar-overlay ${isOpen ? "show" : ""}`}
+        onClick={onClose}
+      />
+
+      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+        <NavLink to="/" end onClick={onClose}>
+          Dashboard
+        </NavLink>
+
+        {state.meta?.email && (
+          <>
+            <NavLink to="/events" onClick={onClose}>
+              Events
+            </NavLink>
+            <NavLink to="/temple" onClick={onClose}>
+              Temples
+            </NavLink>
+            <NavLink to="/packages" onClick={onClose}>
+              Packages
+            </NavLink>
+            <NavLink to="/settings" onClick={onClose}>
+              Settings
+            </NavLink>
+          </>
+        )}
+      </aside>
+    </>
   );
 };
 
