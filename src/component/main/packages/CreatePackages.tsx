@@ -13,7 +13,7 @@ type BasicInfoField = InputFieldProps & {
   render?: () => void;
 };
 
-const CreatePackages = () => {
+const CreatePackages = ({ onSuccess }: { onSuccess: () => void }) => {
   const notify = useNotification();
   const { loading, createPackage } = usePackage({ autoFetch: false });
   const packageConfig: {
@@ -96,6 +96,7 @@ const CreatePackages = () => {
     try {
       const reqParam = formatPayload.call(formData);
       await createPackage(reqParam);
+      onSuccess();
       notify("Package Created Successfully!", "success");
     } catch (error: any) {
       const errorKeys = Object.keys(error.response?.data.error?.errors || {});
@@ -105,17 +106,19 @@ const CreatePackages = () => {
 
   return (
     <>
-      <div className="action-buttons">
-        <Button onClick={onSave}>
-          {loading && <Spinner color="primary" size="xs" />}
-          Save
-        </Button>
-      </div>
-      <div className="sectios-container">
+      <div className="sectios-container-pkg">
         <Section>
-          <Section.Title>Add Package Informations</Section.Title>
+          <Section.Title>
+            Add Package Informations
+            <div className="action-buttons">
+              <Button onClick={onSave}>
+                {loading && <Spinner color="primary" size="xs" />}
+                Save
+              </Button>
+            </div>
+          </Section.Title>
           <Section.Content>
-            <div className="section-child-container">
+            <div className="section-child-container-package">
               {packageConfig.basicInfo?.map(
                 (pkg: InputFieldProps, idx: number) => {
                   return (

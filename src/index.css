@@ -78,7 +78,7 @@ body {
 /* Content */
 .dashboard-content {
   flex: 1; /* take remaining height */
-  padding: 24px;
+  padding: 24px !important;
   background: #d4c4a8;
   box-sizing: border-box;
   color: #000000;

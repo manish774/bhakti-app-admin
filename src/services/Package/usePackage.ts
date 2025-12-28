@@ -8,7 +8,19 @@ interface UsePackagesState {
   error: string | null;
 }
 
-export const usePackage = ({ autoFetch = true }: { autoFetch: boolean }) => {
+interface UsePackagesReturn extends UsePackagesState {
+  refetch: () => Promise<void>;
+  fetchPackages: () => Promise<void>;
+  createPackage: (payload: PackageProps) => Promise<PackageProps | null>;
+  updatePackage: (payload: PackageProps) => Promise<PackageProps | null>;
+  deletePackage: ({ id }: { id: string }) => Promise<PackageProps | null>;
+}
+
+export const usePackage = ({
+  autoFetch = true,
+}: {
+  autoFetch: boolean;
+}): UsePackagesReturn => {
   const [state, setState] = useState<UsePackagesState>({
     packages: [],
     loading: autoFetch,
@@ -21,7 +33,12 @@ export const usePackage = ({ autoFetch = true }: { autoFetch: boolean }) => {
     try {
       const data = await controller.getPackages();
       console.log(data);
-      setState((prev) => ({ ...prev, loading: false, packages: data }));
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        //@ts-expect-error expected
+        packages: data.data.data,
+      }));
     } catch (err) {
       setState((prev) => ({
         ...prev,
@@ -32,22 +49,61 @@ export const usePackage = ({ autoFetch = true }: { autoFetch: boolean }) => {
     }
   }, [controller]);
 
-  const createPackage = async (payload: PackageProps) => {
-    setState((prev) => ({ ...prev, loading: true }));
-    try {
-      const data = await controller.createPackage(payload);
-      console.log(data);
-      setState((prev) => ({ ...prev, loading: false }));
-    } catch (err) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error: err instanceof Error ? err.message : "Failed to fetch packages",
-      }));
-    }
-  };
-  const deletePackage = async () => {};
-  const updatePackage = async () => {};
+  const createPackage = useCallback(
+    async (payload: PackageProps): Promise<PackageProps> => {
+      setState((prev) => ({ ...prev, loading: true }));
+      try {
+        const deletedPackage = await controller.createPackage(payload);
+        setState((prev) => ({ ...prev, loading: false }));
+        return deletedPackage;
+      } catch (err) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            err instanceof Error ? err.message : "Failed to fetch packages",
+        }));
+      }
+    },
+    [controller]
+  );
+
+  const deletePackage = useCallback(
+    async ({ id }: { id: string }): Promise<PackageProps> => {
+      setState((prev) => ({ ...prev, loading: true }));
+      try {
+        const deletedPackage = await controller.deletePackage({ id });
+        setState((prev) => ({ ...prev, loading: false }));
+        return deletedPackage;
+      } catch (err) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            err instanceof Error ? err.message : "Failed to delete packages",
+        }));
+      }
+    },
+    [controller]
+  );
+  const updatePackage = useCallback(
+    async (payload): Promise<PackageProps> => {
+      setState((prev) => ({ ...prev, loading: true }));
+      try {
+        const deletedPackage = await controller.updatePacakage(payload);
+        setState((prev) => ({ ...prev, loading: false }));
+        return deletedPackage;
+      } catch (err) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            err instanceof Error ? err.message : "Failed to update packages",
+        }));
+      }
+    },
+    [controller]
+  );
 
   useEffect(() => {
     if (autoFetch) {
@@ -57,6 +113,7 @@ export const usePackage = ({ autoFetch = true }: { autoFetch: boolean }) => {
 
   return {
     ...state,
+    refetch: fetchPackages,
     createPackage,
     fetchPackages,
     deletePackage,

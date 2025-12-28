@@ -1,9 +1,15 @@
-import { useEffect } from "react";
 type PreviewProps = {
-  templeId: string;
+  callback: () => void;
 };
 const Preview = (props: PreviewProps) => {
-  useEffect(() => {}, [props]);
+  //onst [data, setData] = useState();
+
+  // useEffect(() => {
+  //   const xData = props.callback();
+  //   //@ts-expect-error expected
+  //   setData(xData);
+  // }, [props]);
+  console.log(props);
 
   return <div>Preview</div>;
 };

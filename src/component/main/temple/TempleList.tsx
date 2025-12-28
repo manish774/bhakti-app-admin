@@ -43,7 +43,8 @@ const TempleList = () => {
       {selectedRow && (
         <Suspense fallback={"Loading..."}>
           <div className="preview">
-            <PreviewPanel templeId={selectedRow} />
+            //@ts-ignore: ignore
+            <PreviewPanel callback={() => {}} />
           </div>
         </Suspense>
       )}

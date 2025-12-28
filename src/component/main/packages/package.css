@@ -1,0 +1,30 @@
+.sectios-container-pkg {
+  .section-title {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  button {
+    margin-left: auto;
+  }
+}
+
+.section-child-container-package {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* Make sections scrollable */
+.sectios-container {
+  height: calc(100vh - 155px); /* adjust if action-buttons height changes */
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.section-title {
+  padding: 10px !important;
+}

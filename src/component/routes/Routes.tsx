@@ -5,6 +5,7 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Login from "../Login/Login";
 import Temple from "../main/temple/Temple";
 import Packages from "../main/packages/Packages";
+import Events from "../main/events/Events";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
           { index: true, element: <Dashboard /> },
           { path: "temple", element: <Temple /> },
           { path: "packages", element: <Packages /> },
+          { path: "events", element: <Events /> },
         ],
       },
     ],
