@@ -43,7 +43,7 @@ const TempleList = () => {
       {selectedRow && (
         <Suspense fallback={"Loading..."}>
           <div className="preview">
-            <PreviewPanel />
+            <PreviewPanel templeId={selectedRow} />
           </div>
         </Suspense>
       )}

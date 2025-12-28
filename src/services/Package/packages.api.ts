@@ -12,6 +12,7 @@ export const PackageAPI = {
     return result.data;
   },
   deletePackage: async ({ id }: { id: string }): Promise<PackageProps> => {
+    //@ts-expect-error expected
     const result = await apiClient.delete("api/package/create", { id: id });
     return result.data;
   },

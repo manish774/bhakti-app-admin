@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 type PreviewProps = {
   templeId: string;
 };
 const Preview = (props: PreviewProps) => {
-  useEffect(() => {}, []);
+  useEffect(() => {}, [props]);
 
   return <div>Preview</div>;
 };

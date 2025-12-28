@@ -19,7 +19,7 @@ interface ImageUploadProps {
   label: string;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onFileSelect, label }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ onFileSelect }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       onFileSelect(e.target.files[0]);
@@ -109,6 +109,7 @@ const InputField: React.FC<InputFieldProps> = ({
     }
   };
 
+  //@ts-expect-error: justddd jh
   const handleRemove = (indexToRemove: number) => {
     if (activeFields > 1) {
       setActiveFields(activeFields - 1);
@@ -122,6 +123,7 @@ const InputField: React.FC<InputFieldProps> = ({
           <textarea
             aria-index={`${index}`}
             key={index}
+            //@ts-expect-error: typecasting
             {...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
             onChange={(e) => onChange?.(e, index)}
             style={inputStyle}

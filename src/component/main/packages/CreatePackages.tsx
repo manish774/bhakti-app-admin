@@ -4,7 +4,6 @@ import { Section } from "../../core/section/Section";
 
 import Button from "../../core/button/Button";
 import { useState } from "react";
-import Services from "../../../services/Services";
 import { formatPayload } from "../utils/util";
 import { Spinner } from "../../core/spinners/Spinner";
 import { useNotification } from "../../../context/Notification";
@@ -15,8 +14,6 @@ type BasicInfoField = InputFieldProps & {
 };
 
 const CreatePackages = () => {
-  const service = Services.getInstance();
-  const [isLoading, setLoading] = useState<boolean>();
   const notify = useNotification();
   const { loading, createPackage } = usePackage({ autoFetch: false });
   const packageConfig: {
@@ -61,7 +58,6 @@ const CreatePackages = () => {
 
   const [formData, setFormData] = useState<Record<string, any>>({});
 
-  console.log(formData);
   const formatValue = (name: string, value: any) => {
     if (name === "description") {
       return value?.map((x, i) => ({ id: i, detail: x }));
@@ -71,7 +67,6 @@ const CreatePackages = () => {
   // Enhanced handleOnChange to handle both single values and arrays
   const handleOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    index: number,
     pkg: InputFieldProps
   ) => {
     const isMultiple = pkg.numberOfFields > 0;
@@ -99,15 +94,12 @@ const CreatePackages = () => {
 
   const onSave = async () => {
     try {
-      setLoading(true);
       const reqParam = formatPayload.call(formData);
       await createPackage(reqParam);
       notify("Package Created Successfully!", "success");
     } catch (error: any) {
       const errorKeys = Object.keys(error.response?.data.error?.errors || {});
       errorKeys.forEach((x) => notify(x, "error"));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -115,7 +107,7 @@ const CreatePackages = () => {
     <>
       <div className="action-buttons">
         <Button onClick={onSave}>
-          {isLoading && <Spinner color="primary" size="xs" />}
+          {loading && <Spinner color="primary" size="xs" />}
           Save
         </Button>
       </div>
@@ -134,7 +126,7 @@ const CreatePackages = () => {
                         e: React.ChangeEvent<
                           HTMLInputElement | HTMLTextAreaElement
                         >
-                      ) => handleOnChange(e, idx, pkg)}
+                      ) => handleOnChange(e, pkg)}
                     />
                   );
                 }
