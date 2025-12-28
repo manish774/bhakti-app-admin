@@ -4,9 +4,7 @@ import Dashboard from "../Dashboard/Dashboard";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import Login from "../Login/Login";
 import Temple from "../main/temple/Temple";
-// import Users from "../pages/Users/Users";
-// import Settings from "../pages/Settings/Settings";
-// import NotFound from "../pages/NotFound";
+import Packages from "../main/packages/Packages";
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +20,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Dashboard /> },
           { path: "temple", element: <Temple /> },
+          { path: "packages", element: <Packages /> },
         ],
       },
     ],

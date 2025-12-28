@@ -1,0 +1,9 @@
+.temple-list-container {
+  display: flex;
+  .table {
+    flex: 0 0 80%;
+  }
+  .preview {
+    flex: 0 0 20%;
+  }
+}

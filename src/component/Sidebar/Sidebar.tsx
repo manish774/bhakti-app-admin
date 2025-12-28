@@ -10,6 +10,7 @@ const Sidebar = () => {
       {state.meta?.email ? (
         <>
           <NavLink to="/temple">Temples</NavLink>
+          <NavLink to="/packages">Packages</NavLink>
           <NavLink to="/settings">Settings</NavLink>
         </>
       ) : (

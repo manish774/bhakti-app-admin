@@ -17,8 +17,8 @@ import Input from "../generic/Input";
 // import Input from "../generic/Input";
 
 const Table = ({ records, config, pageSize }: TableProps) => {
-  const [currentPagination, setCurrentPagination] = useState<any>(1);
-  const [currentRecord, setCurrentRecords] = useState<any>([]);
+  const [currentPagination, setCurrentPagination] = useState<number>(1);
+  const [currentRecord, setCurrentRecords] = useState<any[]>([]);
   const [completeRecord, setCompleteRecord] = useState(records || []);
   const [rowCount, setRowCount] = useState(records?.length || 0);
   const [columnSortState, setColumnSortState] = useState<any>({});
@@ -37,7 +37,7 @@ const Table = ({ records, config, pageSize }: TableProps) => {
     offset: itemPerPage,
   });
 
-  const { columns, title } = config; //To-do : make column name form this column and values from column render
+  const { columns, title, onRowClick } = config; //To-do : make column name form this column and values from column render
 
   const sortableColumns = useMemo(
     () => columns.filter((col) => col?.sortable === true).map((co) => co.id),
@@ -75,7 +75,6 @@ const Table = ({ records, config, pageSize }: TableProps) => {
           <th
             style={{ background: rec?.highLight && rec?.highLight?.color }}
             onClick={() => {
-              //@ts-ignore
               if (sortableColumns.includes(rec?.id)) {
                 sortColumn(rec?.id, columnSortState[rec?.id]);
                 setColumnSortState(() => ({
@@ -167,7 +166,13 @@ const Table = ({ records, config, pageSize }: TableProps) => {
   };
 
   const rows = currentRecord?.map((record: any) => (
-    <tr key={generateRandomString(10)}>
+    <tr
+      key={generateRandomString(10)}
+      onClick={() => {
+        console.log("first");
+        onRowClick(record);
+      }}
+    >
       {config?.checkbox && (
         <td>
           <Input

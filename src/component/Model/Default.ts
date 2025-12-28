@@ -12,6 +12,7 @@ export interface tableConfig {
   columns: ColumnProps[];
   showHeaderCount?: boolean;
   minHeight?: string;
+  onRowClick?: (args) => any;
 }
 
 export interface HoverActionProp {
