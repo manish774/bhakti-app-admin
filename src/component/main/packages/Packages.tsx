@@ -4,8 +4,10 @@ import CreatePackages from "./CreatePackages";
 import PackageList from "./PackageList";
 import "./package.css";
 const Packages = () => {
-  const { packages, loading, refetch } = usePackage({ autoFetch: true });
-  console.log(packages, "yes");
+  const { packages, loading, refetch } = usePackage({
+    autoFetch: true,
+  });
+
   if (loading) return <Spinner variant={"bars"} />;
 
   return (

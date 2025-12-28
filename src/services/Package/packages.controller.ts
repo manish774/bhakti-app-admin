@@ -26,4 +26,8 @@ export class PackageController {
   async createPackage(payload: PackageProps): Promise<PackageProps> {
     return PackageAPI.createPackage(payload);
   }
+
+  async getByIds({ ids }: { ids: string[] }): Promise<PackageProps[]> {
+    return PackageAPI.getByIds({ ids });
+  }
 }

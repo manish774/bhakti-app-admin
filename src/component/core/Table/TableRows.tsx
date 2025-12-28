@@ -6,10 +6,9 @@ interface RowProps {
   record: any;
   column: ColumnProps;
   config?: tableConfig;
-  columnNumber: number;
+  columnNumber?: number;
 }
-const TableRows = ({ record, column, config, columnNumber }: RowProps) => {
-  console.log(config, columnNumber);
+const TableRows = ({ record, column }: RowProps) => {
   const [showRowOptions, setShowRowOptions] = useState<boolean>(false);
   const rowOptionsRef = useRef(null);
 

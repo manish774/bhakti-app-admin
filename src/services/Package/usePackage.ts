@@ -11,6 +11,7 @@ interface UsePackagesState {
 interface UsePackagesReturn extends UsePackagesState {
   refetch: () => Promise<void>;
   fetchPackages: () => Promise<void>;
+  fetchPackageByIDs: (ids) => Promise<PackageProps[]>;
   createPackage: (payload: PackageProps) => Promise<PackageProps | null>;
   updatePackage: (payload: PackageProps) => Promise<PackageProps | null>;
   deletePackage: ({ id }: { id: string }) => Promise<PackageProps | null>;
@@ -26,8 +27,8 @@ export const usePackage = ({
     loading: autoFetch,
     error: null,
   });
-  const controller = PackageController.getInstance();
 
+  const controller = PackageController.getInstance();
   const fetchPackages = useCallback(async () => {
     setState((prev) => ({ ...prev, loading: true }));
     try {
@@ -48,7 +49,6 @@ export const usePackage = ({
       }));
     }
   }, [controller]);
-
   const createPackage = useCallback(
     async (payload: PackageProps): Promise<PackageProps> => {
       setState((prev) => ({ ...prev, loading: true }));
@@ -67,7 +67,6 @@ export const usePackage = ({
     },
     [controller]
   );
-
   const deletePackage = useCallback(
     async ({ id }: { id: string }): Promise<PackageProps> => {
       setState((prev) => ({ ...prev, loading: true }));
@@ -104,6 +103,32 @@ export const usePackage = ({
     },
     [controller]
   );
+  const fetchPackageByIDs = useCallback(
+    async (ids): Promise<PackageProps[]> => {
+      setState((prev) => ({ ...prev, loading: true }));
+      try {
+        const data = await controller.getByIds({ ids });
+        console.log(data);
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          //@ts-expect-error expected
+          packages: data.data,
+        }));
+        //@ts-expect-error expected
+        return data.data;
+      } catch (err) {
+        setState((prev) => ({
+          ...prev,
+          packages: [],
+          loading: false,
+          error:
+            err instanceof Error ? err.message : "Failed to fetch packages",
+        }));
+      }
+    },
+    [controller]
+  );
 
   useEffect(() => {
     if (autoFetch) {
@@ -113,6 +138,7 @@ export const usePackage = ({
 
   return {
     ...state,
+    fetchPackageByIDs,
     refetch: fetchPackages,
     createPackage,
     fetchPackages,

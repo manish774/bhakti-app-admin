@@ -7,6 +7,11 @@ export const PackageAPI = {
     if (!result) throw Error("Some issue");
     return result.data;
   },
+  getByIds: async ({ ids }: { ids: string[] }): Promise<PackageProps[]> => {
+    const result = await apiClient.post("api/package/getByIds", { ids });
+    if (!result) throw Error("Some issue");
+    return result.data;
+  },
   createPackage: async (payload: PackageProps): Promise<PackageProps> => {
     const result = await apiClient.post("api/package/create", { ...payload });
     return result.data;
