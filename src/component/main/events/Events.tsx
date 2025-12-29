@@ -33,7 +33,7 @@ const Events = () => {
         return packageLoading ? (
           <Spinner variant="bars" />
         ) : (
-          x.packageId?.map((y) => (
+          x?.packageId?.map((y) => (
             <span style={{ padding: 5 }}>{packages[y].name}</span>
           ))
         );
@@ -51,7 +51,7 @@ const Events = () => {
 
   useEffect(() => {
     if (!ids.length) return;
-
+    console.log(ids, "ids");
     let isMounted = true;
     setPackageLoading(true);
     console.log(ids);
