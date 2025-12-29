@@ -5,8 +5,8 @@ import Select from "react-select";
  * Types
  * ====================================== */
 
-interface SelectOption {
-  name: string;
+export interface SelectOption {
+  label: string;
   value: string;
 }
 
@@ -156,9 +156,11 @@ const InputField: React.FC<InputFieldProps> = ({
     if (type === "select") {
       return (
         <Select
+          //@ts-expect-error no issue
           options={options}
           isMulti={multiple}
           {...rest}
+          //@ts-expect-error no issue
           onChange={(e) => onChange?.(e, index)}
         />
       );

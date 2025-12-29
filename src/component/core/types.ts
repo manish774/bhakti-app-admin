@@ -13,6 +13,6 @@ export interface InputFieldProps
 
   error?: string;
   numberOfFields?: number;
-  options?: { name: string; value: string }[];
+  options?: { label: string; value: string }[];
   multiple?: boolean;
 }

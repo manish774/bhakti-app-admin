@@ -8,7 +8,7 @@ export interface EventProps {
     price: number;
     discount: number;
   }[];
-  isPopular: boolean;
+  isPopular?: boolean;
 }
 
 export type UpdateEventPayload = Pick<EventProps, "id"> &

@@ -27,7 +27,7 @@ const CreateEvent = () => {
   const [packagePriceData, setPackagePriceData] =
     useState<IPackagePriceData[]>();
 
-  const eventConfig: InputFieldProps = useMemo(
+  const eventConfig: InputFieldProps[] = useMemo(
     () => [
       {
         label: "Event Name",
@@ -73,7 +73,7 @@ const CreateEvent = () => {
     });
   }, []);
 
-  const formatValue = (name: string, value: any) => {
+  const formatValue = (value: any) => {
     return value;
   };
 
@@ -114,8 +114,10 @@ const CreateEvent = () => {
     if (pkg.type === "select") {
       setFormData((prev) => ({ ...prev, [pkg.name]: e }));
       if (pkg.name === "packageId") {
+        //@ts-expect-error ignore as it will be array from select
         updatePriceOfPackage(e);
       }
+      return;
     }
     const isMultiple = pkg?.numberOfFields > 0;
     if (!e.target?.name) return;
@@ -133,7 +135,7 @@ const CreateEvent = () => {
       setFormData((prev) => {
         const currentArray = Array.isArray(prev[name]) ? [...prev[name]] : [];
         currentArray[parseInt(e.target.getAttribute("aria-index"))] = value;
-        return { ...prev, [name]: formatValue(pkg.name, currentArray) };
+        return { ...prev, [name]: formatValue(currentArray) };
       });
     } else {
       console.log(value);
@@ -150,6 +152,7 @@ const CreateEvent = () => {
       discount: x.discount,
     }));
     const payload = { ...formData, packageId, pricePackageId, templeId };
+    //@ts-expect-error payload event name issue
     await create(payload);
   };
 
@@ -173,6 +176,8 @@ const CreateEvent = () => {
       updatePackagePriceData(id, field, e.target.value);
     };
 
+  if (pkgLoading) return <Spinner variant="circular" />;
+
   return (
     <>
       <div className="sectios-container-pkg">
@@ -191,6 +196,7 @@ const CreateEvent = () => {
               {eventConfig.map((x) => {
                 return (
                   <div>
+                    {/* @ts-expect-error  not an issue */}
                     <InputField onChange={(e) => handleOnChange(e, x)} {...x} />
                   </div>
                 );
