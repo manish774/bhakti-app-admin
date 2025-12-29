@@ -7,6 +7,7 @@ import Temple from "../main/temple/Temple";
 import Packages from "../main/packages/Packages";
 import Events from "../main/events/Events";
 import CreateEvent from "../main/events/CreateEvent";
+import Booking from "../main/Bookings/Booking";
 
 export const router = createBrowserRouter([
   {
@@ -20,11 +21,12 @@ export const router = createBrowserRouter([
       {
         element: <ProtectedRoute />, // 👈 content guard
         children: [
-          { index: true, element: <Dashboard /> },
+          { index: true, element: <Events /> },
           { path: "temple", element: <Temple /> },
           { path: "packages", element: <Packages /> },
           { path: "events", element: <Events /> },
           { path: "events/createEvent", element: <CreateEvent /> },
+          { path: "bookings", element: <Booking /> },
         ],
       },
     ],

@@ -49,7 +49,7 @@ export const useEvent = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const created = await controller.createEvent(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: "" }));
         return created;
       } catch (err) {
         setState((prev) => ({

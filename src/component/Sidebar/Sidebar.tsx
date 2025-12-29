@@ -33,8 +33,8 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             <NavLink to="/packages" onClick={onClose}>
               Packages
             </NavLink>
-            <NavLink to="/settings" onClick={onClose}>
-              Settings
+            <NavLink to="/bookings" onClick={onClose}>
+              Bookings
             </NavLink>
           </>
         )}
