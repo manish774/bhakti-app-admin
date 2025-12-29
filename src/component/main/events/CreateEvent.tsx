@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Services from "../../../services/Services";
 import { usePackage } from "../../../services/Package/usePackage";
 import "./event.css";
+import { useNotification } from "../../../context/Notification";
 
 type IPackagePriceData = {
   id: string;
@@ -19,13 +20,14 @@ type IPackagePriceData = {
 type PriceField = "price" | "discount";
 
 const CreateEvent = () => {
-  const { loading, create } = useEvent({ autoFetch: false });
+  const { loading, create, error } = useEvent({ autoFetch: false });
   const { loading: pkgLoading, packages } = usePackage({ autoFetch: true });
   const service = Services.getInstance();
   const [templeList, setTempleList] = useState([]);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [packagePriceData, setPackagePriceData] =
     useState<IPackagePriceData[]>();
+  const notify = useNotification();
 
   const eventConfig: InputFieldProps[] = useMemo(
     () => [
@@ -143,7 +145,7 @@ const CreateEvent = () => {
     }
   };
 
-  const onSaveEvent = async () => {
+  const onSaveEvent = () => {
     const packageId = formData.packageId?.map((x) => x.value);
     const templeId = formData.templeId?.map((x) => x.value);
     const pricePackageId = packagePriceData?.map((x) => ({
@@ -153,7 +155,17 @@ const CreateEvent = () => {
     }));
     const payload = { ...formData, packageId, pricePackageId, templeId };
     //@ts-expect-error payload event name issue
-    await create(payload);
+    create(payload)
+      .then(() => {
+        if (error) {
+          notify("Somthing went wrong!", "error");
+        } else {
+          notify("Event Created successfully", "success");
+        }
+      })
+      .catch(() => {
+        notify("Somthing went wrong!", "error");
+      });
   };
 
   const updatePackagePriceData = (
