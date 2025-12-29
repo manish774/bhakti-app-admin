@@ -5,6 +5,7 @@ import Button from "../../core/button/Button";
 import Spinner from "../../core/spinners/Spinner";
 import Table from "../../core/Table/Table";
 import type { ColumnProps } from "../../Model/Default";
+import { useNavigate } from "react-router-dom";
 
 const Events = () => {
   const { events, loading } = useEvent({ autoFetch: true });
@@ -12,7 +13,7 @@ const Events = () => {
 
   const [packages, setPackages] = useState<Record<string, any>>({});
   const [packageLoading, setPackageLoading] = useState(false);
-
+  const navigate = useNavigate();
   const columns: ColumnProps[] = [
     {
       id: "eventName",
@@ -32,7 +33,9 @@ const Events = () => {
         return packageLoading ? (
           <Spinner variant="bars" />
         ) : (
-          x.packageId?.map((y) => packages[y].name)
+          x.packageId?.map((y) => (
+            <span style={{ padding: 5 }}>{packages[y].name}</span>
+          ))
         );
       },
     },
@@ -76,6 +79,9 @@ const Events = () => {
 
   if (loading || packageLoading) return <Spinner />;
 
+  const addNewEventHandler = () => {
+    navigate("createEvent");
+  };
   return (
     <div>
       <Table
@@ -83,7 +89,7 @@ const Events = () => {
         records={[...events.data]}
         pageSize={5}
         config={{
-          title: <Button>+ Add New Event</Button>,
+          title: <Button onClick={addNewEventHandler}>+ Add New Event</Button>,
           columns,
         }}
       />

@@ -8,7 +8,11 @@ export interface InputFieldProps
     | "number"
     | "textarea"
     | "file"
-    | "checkbox";
+    | "checkbox"
+    | "select";
+
   error?: string;
   numberOfFields?: number;
+  options?: { name: string; value: string }[];
+  multiple?: boolean;
 }

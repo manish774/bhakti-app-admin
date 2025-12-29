@@ -1,0 +1,227 @@
+import InputField from "../../core/input/Input";
+import { Section } from "../../core/section/Section";
+import Button from "../../core/button/Button";
+import { Spinner } from "../../core/spinners/Spinner";
+import { useEvent } from "../../../services/Event/useEvent";
+import type { InputFieldProps } from "../../core/types";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Services from "../../../services/Services";
+import { usePackage } from "../../../services/Package/usePackage";
+import "./event.css";
+
+type IPackagePriceData = {
+  id: string;
+  price: string;
+  discount?: string;
+  label?: string;
+};
+
+type PriceField = "price" | "discount";
+
+const CreateEvent = () => {
+  const { loading, create } = useEvent({ autoFetch: false });
+  const { loading: pkgLoading, packages } = usePackage({ autoFetch: true });
+  const service = Services.getInstance();
+  const [templeList, setTempleList] = useState([]);
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [packagePriceData, setPackagePriceData] =
+    useState<IPackagePriceData[]>();
+
+  const eventConfig: InputFieldProps = useMemo(
+    () => [
+      {
+        label: "Event Name",
+        type: "text",
+        name: "eventName",
+        required: true,
+      },
+      {
+        label: "Select Temples",
+        type: "select",
+        name: "templeId",
+        required: true,
+        options: (templeList || [])?.map((x) => ({
+          label: x.name,
+          value: x._id,
+        })),
+        multiple: true,
+      },
+      {
+        label: "Select Packages",
+        type: "select",
+        name: "packageId",
+        required: true,
+        multiple: true,
+        options: (packages || [])?.map((x) => ({
+          label: x.name,
+          value: x._id,
+        })),
+      },
+      {
+        label: "Is Popular",
+        type: "checkbox",
+        name: "isPopular",
+        required: true,
+      },
+    ],
+    [packages, templeList]
+  );
+
+  useEffect(() => {
+    service.getAllTemples().then((resp) => {
+      setTempleList(resp);
+    });
+  }, []);
+
+  const formatValue = (name: string, value: any) => {
+    return value;
+  };
+
+  const updatePriceOfPackage = useCallback(
+    (data: { label: string; value: string }[]) => {
+      setPackagePriceData((prev = []) => {
+        const prevMap = new Map(prev.map((p) => [p.id, p]));
+
+        return data.map((x) => {
+          const existing = prevMap.get(x.value);
+
+          if (existing) {
+            // already exists → keep old price & discount
+            return {
+              ...existing,
+              label: x.label, // keep label in sync
+            };
+          }
+
+          // new package → initialize
+          return {
+            id: x.value,
+            label: x.label,
+            price: "",
+            discount: "",
+          };
+        });
+      });
+    },
+    []
+  );
+  console.log(packagePriceData);
+
+  const handleOnChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    pkg: InputFieldProps
+  ) => {
+    if (pkg.type === "select") {
+      setFormData((prev) => ({ ...prev, [pkg.name]: e }));
+      if (pkg.name === "packageId") {
+        updatePriceOfPackage(e);
+      }
+    }
+    const isMultiple = pkg?.numberOfFields > 0;
+    if (!e.target?.name) return;
+
+    const { name, value, type } = e.target;
+
+    // Handle checkbox separately
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
+
+    if (isMultiple) {
+      setFormData((prev) => {
+        const currentArray = Array.isArray(prev[name]) ? [...prev[name]] : [];
+        currentArray[parseInt(e.target.getAttribute("aria-index"))] = value;
+        return { ...prev, [name]: formatValue(pkg.name, currentArray) };
+      });
+    } else {
+      console.log(value);
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const onSaveEvent = async () => {
+    const packageId = formData.packageId?.map((x) => x.value);
+    const templeId = formData.templeId?.map((x) => x.value);
+    const pricePackageId = packagePriceData?.map((x) => ({
+      packageId: x.id,
+      price: x.price,
+      discount: x.discount,
+    }));
+    const payload = { ...formData, packageId, pricePackageId, templeId };
+    await create(payload);
+  };
+
+  const updatePackagePriceData = (
+    id: string,
+    field: PriceField,
+    value: string
+  ) => {
+    setPackagePriceData((prev = []) =>
+      prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+    );
+  };
+
+  const handleFieldChange =
+    (field: PriceField, id: string) =>
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >
+    ) => {
+      updatePackagePriceData(id, field, e.target.value);
+    };
+
+  return (
+    <>
+      <div className="sectios-container-pkg">
+        <Section>
+          <Section.Title>
+            Add New Event
+            <div className="action-buttons">
+              <Button onClick={onSaveEvent}>
+                {loading && <Spinner color="primary" size="xs" />}
+                Save
+              </Button>
+            </div>
+          </Section.Title>
+          <Section.Content>
+            <div className="section-child-container-event">
+              {eventConfig.map((x) => {
+                return (
+                  <div>
+                    <InputField onChange={(e) => handleOnChange(e, x)} {...x} />
+                  </div>
+                );
+              })}
+            </div>
+          </Section.Content>
+          {packagePriceData?.length > 0 && (
+            <Section.Content>
+              {packagePriceData?.map((x) => (
+                <>
+                  {x.label}
+                  <div className={"package-price-form"}>
+                    <InputField
+                      placeholder={"Enter Price"}
+                      type="number"
+                      onChange={handleFieldChange("price", x.id)}
+                    />
+                    <InputField
+                      placeholder={"Enter Discount %"}
+                      type="number"
+                      onChange={handleFieldChange("discount", x.id)}
+                    />
+                  </div>
+                </>
+              ))}
+            </Section.Content>
+          )}
+        </Section>
+      </div>
+    </>
+  );
+};
+
+export default CreateEvent;
