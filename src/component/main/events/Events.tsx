@@ -6,14 +6,24 @@ import Spinner from "../../core/spinners/Spinner";
 import Table from "../../core/Table/Table";
 import type { ColumnProps } from "../../Model/Default";
 import { useNavigate } from "react-router-dom";
+import { useTemple } from "../../../services/Temple/useTemple";
+import Badge from "../../core/Badge/Badge";
+import { LuPencil } from "react-icons/lu";
+import CreateEvent from "./CreateEvent";
 
 const Events = () => {
   const { events, loading } = useEvent({ autoFetch: true });
   const { fetchPackageByIDs } = usePackage({ autoFetch: false });
+  const { fetchTemplesByIDs, loading: templeLoading } = useTemple({
+    autoFetch: false,
+  });
 
   const [packages, setPackages] = useState<Record<string, any>>({});
   const [packageLoading, setPackageLoading] = useState(false);
   const navigate = useNavigate();
+  const [temple, setTemple] = useState<Record<string, any>>({});
+  const [editId, setEditId] = useState<string>(null);
+
   const columns: ColumnProps[] = [
     {
       id: "eventName",
@@ -27,6 +37,25 @@ const Events = () => {
       },
     },
     {
+      id: "temples",
+      name: "Temples",
+      render: (x) => {
+        return templeLoading ? (
+          <Spinner />
+        ) : (
+          x?.templeId?.map((y) => (
+            <span style={{ padding: 5 }}>
+              <Badge
+                label={temple[y].name}
+                type={"bordered"}
+                style={{ background: "grey", color: "#fff" }}
+              />
+            </span>
+          ))
+        );
+      },
+    },
+    {
       id: "",
       name: "Packages included",
       render: (x) => {
@@ -34,30 +63,64 @@ const Events = () => {
           <Spinner variant="bars" />
         ) : (
           x?.packageId?.map((y) => (
-            <span style={{ padding: 5 }}>{packages[y].name}</span>
+            <span style={{ padding: 5 }}>
+              <Badge
+                label={packages[y].name}
+                type={"bordered"}
+                style={{ background: "grey", color: "#fff" }}
+              />
+            </span>
           ))
         );
       },
     },
+    {
+      id: "edit",
+      name: "",
+      render: (x) => (
+        <Button size={"xsmall"} onClick={() => onEdit(x)}>
+          <LuPencil />
+        </Button>
+      ),
+    },
   ];
 
+  const onEdit = ({ _id }: { _id: string }) => {
+    setEditId(_id);
+    // alert(JSON.stringify(_id));
+  };
+
   const ids = useMemo(
-    () =>
-      //@ts-expect-error expect
-      events?.data?.length ? events.data.map((x) => x.packageId).flat() : [],
-    //@ts-expect-error expect
-    [events?.data]
+    () => (events?.length ? events.map((x) => x.packageId).flat() : []),
+
+    [events]
+  );
+
+  const idsTemples = useMemo(
+    () => (events?.length ? events.map((x) => x.templeId).flat() : []),
+
+    [events]
   );
 
   useEffect(() => {
+    if (!idsTemples.length) return;
+    fetchTemplesByIDs(idsTemples).then((res) => {
+      const resp = res?.reduce((acc, curr) => {
+        const crnt = curr._id;
+        return { ...acc, [crnt]: curr };
+      }, {});
+      setTemple(resp);
+    });
+  }, [idsTemples, fetchTemplesByIDs]);
+
+  useEffect(() => {
     if (!ids.length) return;
-    console.log(ids, "ids");
+
     let isMounted = true;
     setPackageLoading(true);
-    console.log(ids);
+
     fetchPackageByIDs(ids)
       .then((res) => {
-        console.log(res, "res");
         const resp = res?.reduce((acc, curr) => {
           const crnt = curr._id;
           return { ...acc, [crnt]: curr };
@@ -82,17 +145,28 @@ const Events = () => {
   const addNewEventHandler = () => {
     navigate("createEvent");
   };
+
   return (
     <div>
       <Table
-        //@ts-expect-error expected
-        records={[...events.data]}
+        records={[...events]}
         pageSize={5}
         config={{
           title: <Button onClick={addNewEventHandler}>+ Add New Event</Button>,
           columns,
         }}
       />
+      {editId && (
+        <CreateEvent
+          mode={"edit"}
+          values={{
+            packages,
+            temple,
+            events: events?.find((x) => x._id === editId),
+            editId,
+          }}
+        />
+      )}
     </div>
   );
 };

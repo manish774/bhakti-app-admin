@@ -1,4 +1,5 @@
 export interface EventProps {
+  _id?: string;
   id?: string;
   eventName: string;
   templeId: string[];

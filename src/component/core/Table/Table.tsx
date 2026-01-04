@@ -170,7 +170,7 @@ const Table = ({ records, config, pageSize }: TableProps) => {
       key={generateRandomString(10)}
       onClick={() => {
         console.log("first");
-        onRowClick(record);
+        onRowClick && onRowClick(record);
       }}
     >
       {config?.checkbox && (

@@ -32,8 +32,13 @@ export const useEvent = ({
     setState((prev) => ({ ...prev, loading: true }));
     try {
       const data = await controller.getEvents();
-      //@ts-expect-error ecpef
-      setState((prev) => ({ ...prev, loading: false, events: data.data }));
+
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        //@ts-expect-error expected
+        events: data.data?.data,
+      }));
     } catch (err) {
       setState((prev) => ({
         ...prev,

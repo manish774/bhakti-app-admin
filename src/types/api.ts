@@ -88,3 +88,24 @@ export interface User {
   email: string;
   role: string;
 }
+
+export interface ILocation {
+  addressLine1: string;
+  addressLine2?: string;
+  landmark?: string;
+  city: string;
+  state: string;
+  country: string;
+  pinCode: string;
+}
+
+export interface ITemple {
+  name: string;
+  location: ILocation;
+  image?: string;
+  extraInfo: any;
+  description: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  images?: string[];
+}

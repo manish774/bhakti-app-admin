@@ -9,6 +9,7 @@ import Services from "../../../services/Services";
 import { usePackage } from "../../../services/Package/usePackage";
 import "./event.css";
 import { useNotification } from "../../../context/Notification";
+import type { EventProps } from "../../../services/Event/event.types";
 
 type IPackagePriceData = {
   id: string;
@@ -17,9 +18,26 @@ type IPackagePriceData = {
   label?: string;
 };
 
+const Modes = {
+  EDIT: "edit",
+  ADD: "add",
+} as const;
+
+type Modes = typeof Modes[keyof typeof Modes];
+
+type EMode = {
+  mode?: Modes;
+  values?: {
+    packages: Record<string, any>;
+    temple: Record<string, any>;
+    editId: string;
+    events: EventProps;
+  };
+};
+
 type PriceField = "price" | "discount";
 
-const CreateEvent = () => {
+const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
   const { loading, create, error } = useEvent({ autoFetch: false });
   const { loading: pkgLoading, packages } = usePackage({ autoFetch: true });
   const service = Services.getInstance();
@@ -36,6 +54,7 @@ const CreateEvent = () => {
         type: "text",
         name: "eventName",
         required: true,
+        value: mode === Modes.EDIT ? values?.events?.eventName : "",
       },
       {
         label: "Select Temples",
@@ -66,7 +85,7 @@ const CreateEvent = () => {
         required: true,
       },
     ],
-    [packages, templeList]
+    [packages, templeList, mode, values]
   );
 
   useEffect(() => {
@@ -107,7 +126,6 @@ const CreateEvent = () => {
     },
     []
   );
-  console.log(packagePriceData);
 
   const handleOnChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -199,7 +217,7 @@ const CreateEvent = () => {
             <div className="action-buttons">
               <Button onClick={onSaveEvent}>
                 {loading && <Spinner color="primary" size="xs" />}
-                Save
+                {mode === Modes.EDIT ? "Update" : "Save"}
               </Button>
             </div>
           </Section.Title>
