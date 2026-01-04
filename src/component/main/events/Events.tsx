@@ -146,6 +146,10 @@ const Events = () => {
     navigate("createEvent");
   };
 
+  console.log(
+    events?.filter((x) => x._id === editId)?.flatMap((x) => x.packageId),
+    "hahah"
+  );
   return (
     <div>
       <Table
@@ -160,8 +164,14 @@ const Events = () => {
         <CreateEvent
           mode={"edit"}
           values={{
-            packages,
-            temple,
+            packages: events
+              ?.filter((x) => x._id === editId)
+              ?.flatMap((x) => x.packageId)
+              ?.map((x) => packages[x]),
+            temple: events
+              ?.filter((x) => x._id === editId)
+              ?.flatMap((x) => x.templeId)
+              ?.map((x) => temple[x]),
             events: events?.find((x) => x._id === editId),
             editId,
           }}

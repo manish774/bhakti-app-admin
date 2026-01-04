@@ -23,7 +23,7 @@ const Modes = {
   ADD: "add",
 } as const;
 
-type Modes = typeof Modes[keyof typeof Modes];
+type Modes = (typeof Modes)[keyof typeof Modes];
 
 type EMode = {
   mode?: Modes;
@@ -66,6 +66,10 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
           value: x._id,
         })),
         multiple: true,
+        value: Object.entries(values?.temple)?.map((x) => {
+          const [k, v] = x;
+          return { label: v.name, value: v?._id };
+        }),
       },
       {
         label: "Select Packages",
@@ -77,6 +81,10 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
           label: x.name,
           value: x._id,
         })),
+        value: Object.entries(values?.packages)?.map((x) => {
+          const [k, v] = x;
+          return { label: v.name, value: v?._id };
+        }),
       },
       {
         label: "Is Popular",
@@ -88,6 +96,13 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
     [packages, templeList, mode, values]
   );
 
+  console.log(
+    Object.entries(values?.packages)?.map((x) => {
+      const [k, v] = x;
+      return { label: v.name, value: v?._id };
+    }),
+    "fkjhjkhkj"
+  );
   useEffect(() => {
     service.getAllTemples().then((resp) => {
       setTempleList(resp);
