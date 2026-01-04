@@ -47,6 +47,7 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
     useState<IPackagePriceData[]>();
   const notify = useNotification();
 
+  //@ts-expect-error expectings- for select
   const eventConfig: InputFieldProps[] = useMemo(
     () => [
       {
@@ -68,7 +69,7 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
         multiple: true,
         value: Object.entries(values?.temple)?.map((x) => {
           const [k, v] = x;
-          return { label: v.name, value: v?._id };
+          return { label: v.name, value: k };
         }),
       },
       {
@@ -83,7 +84,7 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
         })),
         value: Object.entries(values?.packages)?.map((x) => {
           const [k, v] = x;
-          return { label: v.name, value: v?._id };
+          return { label: v.name, value: k };
         }),
       },
       {
@@ -96,13 +97,6 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
     [packages, templeList, mode, values]
   );
 
-  console.log(
-    Object.entries(values?.packages)?.map((x) => {
-      const [k, v] = x;
-      return { label: v.name, value: v?._id };
-    }),
-    "fkjhjkhkj"
-  );
   useEffect(() => {
     service.getAllTemples().then((resp) => {
       setTempleList(resp);
