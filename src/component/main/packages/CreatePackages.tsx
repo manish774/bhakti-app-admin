@@ -3,19 +3,40 @@ import type { InputFieldProps } from "../../core/types";
 import { Section } from "../../core/section/Section";
 
 import Button from "../../core/button/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatPayload } from "../utils/util";
 import { Spinner } from "../../core/spinners/Spinner";
 import { useNotification } from "../../../context/Notification";
 import { usePackage } from "../../../services/Package/usePackage";
+import type { PackageProps } from "../../../services/Package/packages.types";
 
 type BasicInfoField = InputFieldProps & {
   render?: () => void;
 };
 
-const CreatePackages = ({ onSuccess }: { onSuccess: () => void }) => {
+const Modes = {
+  EDIT: "edit",
+  ADD: "add",
+} as const;
+
+type Modes = (typeof Modes)[keyof typeof Modes];
+
+const CreatePackages = ({
+  onSuccess,
+  mode = Modes.ADD,
+  values,
+  setEditId,
+}: {
+  onSuccess: () => void;
+  mode?: Modes;
+  values?: PackageProps;
+  setEditId?: React.Dispatch<React.SetStateAction<string | null>>;
+}) => {
   const notify = useNotification();
-  const { loading, createPackage } = usePackage({ autoFetch: false });
+  const { loading, createPackage, updatePackage } = usePackage({
+    autoFetch: false,
+  });
+
   const packageConfig: {
     basicInfo: BasicInfoField[];
   } = {
@@ -58,6 +79,21 @@ const CreatePackages = ({ onSuccess }: { onSuccess: () => void }) => {
 
   const [formData, setFormData] = useState<Record<string, any>>({});
 
+  useEffect(() => {
+    if (mode === Modes.EDIT && values) {
+      setFormData({
+        name: values.name || "",
+        numberOfPerson: values.numberOfPerson || "",
+        title: values.title || "",
+        price: values.price || "",
+        description: values.description?.map((d) => d.detail) || [],
+        isPopular: values.isPopular || false,
+      });
+    } else if (mode === Modes.ADD) {
+      setFormData({});
+    }
+  }, [mode, values]);
+
   const formatValue = (name: string, value: any) => {
     if (name === "description") {
       return value?.map((x, i) => ({ id: i, detail: x }));
@@ -95,9 +131,15 @@ const CreatePackages = ({ onSuccess }: { onSuccess: () => void }) => {
   const onSave = async () => {
     try {
       const reqParam = formatPayload.call(formData);
-      await createPackage(reqParam);
+      if (mode === Modes.EDIT && values?._id) {
+        await updatePackage({ ...reqParam, id: values._id });
+        notify("Package Updated Successfully!", "success");
+        setEditId?.(null);
+      } else {
+        await createPackage(reqParam);
+        notify("Package Created Successfully!", "success");
+      }
       onSuccess();
-      notify("Package Created Successfully!", "success");
     } catch (error: any) {
       const errorKeys = Object.keys(error.response?.data.error?.errors || {});
       errorKeys.forEach((x) => notify(x, "error"));
@@ -109,11 +151,11 @@ const CreatePackages = ({ onSuccess }: { onSuccess: () => void }) => {
       <div className="sectios-container-pkg">
         <Section>
           <Section.Title>
-            Add Package Informations
+            {mode === Modes.EDIT ? "Edit Package" : "Add Package Informations"}
             <div className="action-buttons">
               <Button onClick={onSave}>
                 {loading && <Spinner color="primary" size="xs" />}
-                Save
+                {mode === Modes.EDIT ? "Update" : "Save"}
               </Button>
             </div>
           </Section.Title>
@@ -121,10 +163,13 @@ const CreatePackages = ({ onSuccess }: { onSuccess: () => void }) => {
             <div className="section-child-container-package">
               {packageConfig.basicInfo?.map(
                 (pkg: InputFieldProps, idx: number) => {
+                  const val = (formData as any)[pkg.name];
                   return (
                     <InputField
                       key={`${pkg.name}-${idx}`}
                       {...pkg}
+                      value={pkg.type === "checkbox" ? undefined : val ?? ""}
+                      checked={pkg.type === "checkbox" ? !!val : undefined}
                       onChange={(
                         e: React.ChangeEvent<
                           HTMLInputElement | HTMLTextAreaElement

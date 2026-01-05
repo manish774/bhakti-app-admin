@@ -75,6 +75,14 @@ const Events = () => {
       },
     },
     {
+      id: "eventStartTime",
+      name: "Event Start Time",
+    },
+    {
+      id: "eventExpirationTime",
+      name: "Event Expiry Time",
+    },
+    {
       id: "edit",
       name: "",
       render: (x) => (
@@ -146,10 +154,6 @@ const Events = () => {
     navigate("createEvent");
   };
 
-  console.log(
-    events?.filter((x) => x._id === editId)?.flatMap((x) => x.packageId),
-    "hahah"
-  );
   return (
     <div>
       <Table
@@ -162,6 +166,7 @@ const Events = () => {
       />
       {editId && (
         <CreateEvent
+          setEditId={setEditId}
           mode={"edit"}
           values={{
             packages: events

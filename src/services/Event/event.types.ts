@@ -10,6 +10,8 @@ export interface EventProps {
     discount: number;
   }[];
   isPopular?: boolean;
+  eventStartTime: string;
+  eventExpirationTime: string;
 }
 
 export type UpdateEventPayload = Pick<EventProps, "id"> &

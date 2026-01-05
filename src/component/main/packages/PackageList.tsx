@@ -7,9 +7,11 @@ import Spinner from "../../core/spinners/Spinner";
 const PackageList = ({
   isLoading,
   packages = [],
+  onEdit,
 }: {
   isLoading: boolean;
   packages: PackageProps[];
+  onEdit?: (pkg: PackageProps) => void;
 }) => {
   if (isLoading) return <Spinner variant={"dots"} />;
   return (
@@ -32,8 +34,8 @@ const PackageList = ({
             {
               name: "",
               id: "",
-              render: () => (
-                <Button size={"xsmall"}>
+              render: (pkg) => (
+                <Button size={"xsmall"} onClick={() => onEdit?.(pkg)}>
                   <LuPencil />
                 </Button>
               ),

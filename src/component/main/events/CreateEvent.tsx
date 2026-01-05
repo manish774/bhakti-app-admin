@@ -13,8 +13,8 @@ import type { EventProps } from "../../../services/Event/event.types";
 
 type IPackagePriceData = {
   id: string;
-  price: string;
-  discount?: string;
+  price: string | number;
+  discount?: string | number;
   label?: string;
 };
 
@@ -28,34 +28,68 @@ type Modes = (typeof Modes)[keyof typeof Modes];
 type EMode = {
   mode?: Modes;
   values?: {
-    packages: Record<string, any>;
-    temple: Record<string, any>;
+    packages: Record<string, any>[];
+    temple: Record<string, any>[];
     editId: string;
     events: EventProps;
   };
+  setEditId?: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type PriceField = "price" | "discount";
 
 const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
-  const { loading, create, error } = useEvent({ autoFetch: false });
+  const { loading, create, update } = useEvent({ autoFetch: false });
   const { loading: pkgLoading, packages } = usePackage({ autoFetch: true });
   const service = Services.getInstance();
   const [templeList, setTempleList] = useState([]);
+
+  // Initialize formData with values in edit mode
   const [formData, setFormData] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    if (mode === Modes.EDIT && values) {
+      setFormData({
+        eventName: values?.events?.eventName || "",
+        eventStartTime: values?.events?.eventStartTime,
+        eventExpirationTime: values?.events?.eventExpirationTime,
+        templeId: values.temple?.map((x) => ({ label: x.name, value: x._id })),
+        packageId: values.packages?.map((x) => ({
+          label: x.name,
+          value: x._id,
+        })),
+        isPopular: values?.events?.isPopular || false,
+      });
+    }
+    if (mode === Modes.EDIT && values?.events?.pricePackageId) {
+      setPackagePriceData(
+        values?.events?.pricePackageId.map((pkg) => ({
+          id: pkg.packageId,
+          label: values?.packages?.find((x) => x._id === pkg.packageId)?.name,
+          price: pkg.price || "",
+          discount: pkg.discount || "",
+        }))
+      );
+    }
+
+    if (mode === Modes.ADD) {
+      setFormData({});
+      setPackagePriceData([]);
+    }
+  }, [values, mode]);
+
   const [packagePriceData, setPackagePriceData] =
     useState<IPackagePriceData[]>();
   const notify = useNotification();
 
-  //@ts-expect-error expectings- for select
-  const eventConfig: InputFieldProps[] = useMemo(
+  const eventConfig = useMemo(
     () => [
       {
         label: "Event Name",
         type: "text",
         name: "eventName",
         required: true,
-        value: mode === Modes.EDIT ? values?.events?.eventName : "",
+        value: formData.eventName || "",
       },
       {
         label: "Select Temples",
@@ -67,10 +101,7 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
           value: x._id,
         })),
         multiple: true,
-        value: Object.entries(values?.temple)?.map((x) => {
-          const [k, v] = x;
-          return { label: v.name, value: k };
-        }),
+        value: formData.templeId || [],
       },
       {
         label: "Select Packages",
@@ -82,19 +113,31 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
           label: x.name,
           value: x._id,
         })),
-        value: Object.entries(values?.packages)?.map((x) => {
-          const [k, v] = x;
-          return { label: v.name, value: k };
-        }),
+        value: formData.packageId || [],
+      },
+      {
+        label: "Event Start Date",
+        type: "datetime-local" as const,
+        name: "eventStartTime",
+        required: true,
+        value: formData.eventStartTime || "",
+      },
+      {
+        label: "Event Expiry Date",
+        type: "datetime-local" as const,
+        name: "eventExpirationTime",
+        required: true,
+        value: formData.eventExpirationTime || "",
       },
       {
         label: "Is Popular",
         type: "checkbox",
         name: "isPopular",
         required: true,
+        checked: formData.isPopular || false,
       },
-    ],
-    [packages, templeList, mode, values]
+    ] as InputFieldProps[],
+    [packages, templeList, formData]
   );
 
   useEffect(() => {
@@ -181,17 +224,28 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
       discount: x.discount,
     }));
     const payload = { ...formData, packageId, pricePackageId, templeId };
-    //@ts-expect-error payload event name issue
-    create(payload)
+    (values?.editId
+      ? //@ts-expect-error payload event name issue
+
+        update({ ...payload, id: values.editId })
+      : //@ts-expect-error payload event name issue
+
+        create(payload)
+    )
       .then(() => {
-        if (error) {
-          notify("Somthing went wrong!", "error");
-        } else {
-          notify("Event Created successfully", "success");
-        }
+        notify(
+          `Event ${values?.editId ? "Updated" : "Added"} successfully`,
+          "success"
+        );
       })
       .catch(() => {
         notify("Somthing went wrong!", "error");
+      })
+      .finally(() => {
+        // if (values?.editId) {
+        //   setEditId("ADD");
+        //   setFormData({});
+        // }
       });
   };
 
@@ -234,7 +288,7 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
             <div className="section-child-container-event">
               {eventConfig.map((x) => {
                 return (
-                  <div>
+                  <div key={x.name}>
                     {/* @ts-expect-error  not an issue */}
                     <InputField onChange={(e) => handleOnChange(e, x)} {...x} />
                   </div>
@@ -245,21 +299,23 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
           {packagePriceData?.length > 0 && (
             <Section.Content>
               {packagePriceData?.map((x) => (
-                <>
+                <div key={x.id}>
                   {x.label}
                   <div className={"package-price-form"}>
                     <InputField
                       placeholder={"Enter Price"}
                       type="number"
                       onChange={handleFieldChange("price", x.id)}
+                      value={x.price}
                     />
                     <InputField
                       placeholder={"Enter Discount %"}
                       type="number"
                       onChange={handleFieldChange("discount", x.id)}
+                      value={x.discount}
                     />
                   </div>
-                </>
+                </div>
               ))}
             </Section.Content>
           )}
