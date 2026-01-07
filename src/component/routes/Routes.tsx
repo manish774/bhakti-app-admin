@@ -6,6 +6,8 @@ import Temple from "../main/temple/Temple";
 import Packages from "../main/packages/Packages";
 import Events from "../main/events/Events";
 import CreateEvent from "../main/events/CreateEvent";
+import CoreEvents from "../main/coreEvents/CoreEvents";
+import CreateCoreEvent from "../main/coreEvents/CreateCoreEvent";
 import Booking from "../main/Bookings/Booking";
 
 export const router = createBrowserRouter([
@@ -25,6 +27,8 @@ export const router = createBrowserRouter([
           { path: "packages", element: <Packages /> },
           { path: "events", element: <Events /> },
           { path: "createEvent", element: <CreateEvent /> },
+          { path: "coreevents", element: <CoreEvents /> },
+          { path: "coreevents/create", element: <CreateCoreEvent /> },
           { path: "bookings", element: <Booking /> },
           { path: "events/createEvent", element: <CreateEvent /> },
         ],

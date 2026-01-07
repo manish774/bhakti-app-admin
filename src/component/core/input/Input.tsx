@@ -196,7 +196,8 @@ const InputField: React.FC<InputFieldProps> = ({
           {Array.from({ length: activeFields }).map((_, i) => (
             <div
               key={i}
-              style={{ display: "flex", gap: "8px", marginBottom: "8px" }}
+              className="multi-field-row"
+              style={{ marginBottom: "8px" }}
             >
               {renderField(i)}
               {activeFields > 1 && (

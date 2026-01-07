@@ -27,6 +27,9 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             <NavLink to="/events" onClick={onClose}>
               Events
             </NavLink>
+            <NavLink to="/coreevents" onClick={onClose}>
+              Core Events
+            </NavLink>
             <NavLink to="/temple" onClick={onClose}>
               Temples
             </NavLink>

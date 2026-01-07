@@ -117,6 +117,13 @@ body {
 /* Responsive / Mobile Friendly Styles */
 /* ===================================================== */
 
+/* Multi-field helper (desktop default - rows) */
+.multi-field-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
 /* Tablets & small laptops */
 @media (max-width: 1024px) {
   .sidebar {
@@ -190,6 +197,61 @@ body {
 
   .sidebar-overlay.show {
     display: block;
+  }
+
+  /* ========== Forms & Modal Helper Styles (mobile-only) ========== */
+
+  /* Stack form fields into a single column for better mobile readability */
+  .section-child-container-event,
+  .section-child-container-package,
+  .section-child-container,
+  .package-price-form {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Make action buttons full-width and stacked on mobile */
+  .action-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px;
+  }
+
+  .action-buttons button {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Ensure section containers grow naturally on mobile */
+  .sectios-container,
+  .sectios-container-pkg {
+    height: auto !important;
+    max-height: calc(100vh - 140px) !important;
+    overflow-y: auto !important;
+    padding-right: 8px;
+  }
+
+  /* Stack title and actions vertically */
+  .section-title {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  /* Stack multi-field rows vertically on small screens */
+  .multi-field-row {
+    flex-direction: column !important;
+  }
+
+  /* Make form buttons more tappable */
+  button,
+  .submit-button,
+  .close-button {
+    padding: 12px 16px;
+    font-size: 16px;
   }
 }
 

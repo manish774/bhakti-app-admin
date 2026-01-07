@@ -50,3 +50,51 @@ dialog {
 dialog::backdrop {
   background: rgba(0, 0, 0, 0.7);
 }
+
+@media (max-width: 768px) {
+  dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+
+  /* Ensure the close button is reachable and visible */
+  .close-top-button {
+    position: fixed;
+    right: 12px;
+    top: 12px;
+    z-index: 1200;
+  }
+
+  /* Move footer to bottom and make action buttons responsive */
+  dialog .footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    justify-content: center;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.12);
+    z-index: 1100;
+  }
+
+  dialog .footer .submit-button,
+  dialog .footer .close-button {
+    flex: 1;
+    width: auto;
+    margin: 0;
+    height: 44px;
+  }
+}
