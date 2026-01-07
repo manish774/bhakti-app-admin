@@ -24,7 +24,7 @@ export const PackageAPI = {
   updatePackage: async (
     payload: UpdatePackagePayload
   ): Promise<PackageProps> => {
-    const result = await apiClient.patch("api/package/create", { ...payload });
+    const result = await apiClient.patch("api/package/update", { ...payload });
     return result.data;
   },
 };

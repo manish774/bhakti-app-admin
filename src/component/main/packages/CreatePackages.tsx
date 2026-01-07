@@ -36,6 +36,7 @@ const CreatePackages = ({
   const { loading, createPackage, updatePackage } = usePackage({
     autoFetch: false,
   });
+  const [formData, setFormData] = useState<Record<string, any>>({});
 
   const packageConfig: {
     basicInfo: BasicInfoField[];
@@ -46,22 +47,28 @@ const CreatePackages = ({
         type: "text",
         name: "name",
         required: true,
+        value: formData?.name || "",
       },
       {
         label: "Number of persons",
         type: "number",
         name: "numberOfPerson",
         required: true,
+        value: formData?.numberOfPerson || "",
       },
       {
         label: "Title",
         type: "text",
         name: "title",
+        required: true,
+        value: formData?.title || "",
       },
       {
         label: "Price",
         type: "number",
         name: "price",
+        required: true,
+        value: formData?.price || "",
       },
       {
         label: "Description",
@@ -73,11 +80,10 @@ const CreatePackages = ({
         label: "Is popular",
         type: "checkbox",
         name: "isPopular",
+        value: formData?.isPopular || false,
       },
     ],
   };
-
-  const [formData, setFormData] = useState<Record<string, any>>({});
 
   useEffect(() => {
     if (mode === Modes.EDIT && values) {
@@ -105,6 +111,7 @@ const CreatePackages = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     pkg: InputFieldProps
   ) => {
+    console.log(e);
     const isMultiple = pkg.numberOfFields > 0;
     if (!e.target?.name) return;
 
@@ -121,7 +128,7 @@ const CreatePackages = ({
       setFormData((prev) => {
         const currentArray = Array.isArray(prev[name]) ? [...prev[name]] : [];
         currentArray[parseInt(e.target.getAttribute("aria-index"))] = value;
-        return { ...prev, [name]: formatValue(pkg.name, currentArray) };
+        return { ...prev, [name]: formatValue(name, currentArray) };
       });
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -163,13 +170,10 @@ const CreatePackages = ({
             <div className="section-child-container-package">
               {packageConfig.basicInfo?.map(
                 (pkg: InputFieldProps, idx: number) => {
-                  const val = (formData as any)[pkg.name];
                   return (
                     <InputField
                       key={`${pkg.name}-${idx}`}
                       {...pkg}
-                      value={pkg.type === "checkbox" ? undefined : val ?? ""}
-                      checked={pkg.type === "checkbox" ? !!val : undefined}
                       onChange={(
                         e: React.ChangeEvent<
                           HTMLInputElement | HTMLTextAreaElement

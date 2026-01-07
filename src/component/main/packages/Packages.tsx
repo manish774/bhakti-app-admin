@@ -16,19 +16,12 @@ const Packages = () => {
 
   return (
     <div>
-      <CreatePackages onSuccess={refetch} />
+      <CreatePackages
+        onSuccess={refetch}
+        mode={editId ? "edit" : "add"}
+        values={editId ? packages?.find((x) => x._id === editId) : null}
+      />
       <PackageList isLoading={loading} packages={packages} onEdit={onEdit} />
-      {editId && (
-        <CreatePackages
-          onSuccess={() => {
-            setEditId(null);
-            refetch();
-          }}
-          mode={"edit"}
-          values={packages.find((x) => x._id === editId)}
-          setEditId={setEditId}
-        />
-      )}
     </div>
   );
 };

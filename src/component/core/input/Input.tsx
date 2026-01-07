@@ -133,6 +133,7 @@ const InputField: React.FC<InputFieldProps> = ({
       return (
         <textarea
           key={index}
+          aria-index={`${index}`}
           //@ts-expect-error: expecting
           {...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
           rows={rows}
@@ -159,6 +160,7 @@ const InputField: React.FC<InputFieldProps> = ({
           //@ts-expect-error no issue
           options={options}
           isMulti={multiple}
+          value={[]}
           {...rest}
           //@ts-expect-error no issue
           onChange={(e) => onChange?.(e, index)}
