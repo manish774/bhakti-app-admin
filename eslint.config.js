@@ -15,6 +15,10 @@ export default defineConfig([
       reactHooks.configs["recommended-latest"],
       // reactRefresh.configs.vite, // Disabled to allow non-component exports
     ],
+    rules: {
+      // Allow use of `any` across the codebase
+      "@typescript-eslint/no-explicit-any": "off",
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
