@@ -157,7 +157,7 @@ const CreateTemple = () => {
   };
 
   return (
-    <>
+    <div>
       <div className="action-buttons">
         <Button onClick={onSave}>
           {isLoading && <Spinner color="primary" size="xs" />}
@@ -188,7 +188,7 @@ const CreateTemple = () => {
           </Section.Content>
         </Section>
       </div>
-    </>
+    </div>
   );
 };
 

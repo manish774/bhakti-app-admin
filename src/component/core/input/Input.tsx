@@ -19,6 +19,7 @@ interface InputFieldProps
   rows?: number;
   multiple?: boolean;
   options?: SelectOption[];
+  loading?: boolean;
 
   onChange?: (
     e: React.ChangeEvent<
@@ -77,6 +78,7 @@ const InputField: React.FC<InputFieldProps> = ({
   rows = 3,
   options,
   multiple,
+  loading = false,
   ...rest
 }) => {
   const [activeFields, setActiveFields] = useState(1);
@@ -90,10 +92,15 @@ const InputField: React.FC<InputFieldProps> = ({
     border: `2px solid ${error ? "#8b0000" : "#1a1a1a"}`,
     outline: "none",
     fontSize: "14px",
-    background: error ? "#fff5f5" : rest.disabled ? "#d4c4a8" : "#f5eed8",
-    color: "#000",
+    background: error
+      ? "#fff5f5"
+      : rest.disabled || loading
+      ? "#d4c4a8"
+      : "#f5eed8",
+    color: loading ? "#666" : "#000",
     width: "100%",
     boxSizing: "border-box",
+    cursor: loading ? "wait" : "auto",
   };
 
   const labelStyle: React.CSSProperties = {
@@ -139,6 +146,8 @@ const InputField: React.FC<InputFieldProps> = ({
           rows={rows}
           style={inputStyle}
           onChange={(e) => onChange?.(e, index)}
+          disabled={rest.disabled || loading}
+          placeholder={loading ? "Loading..." : rest.placeholder}
         />
       );
     }
@@ -164,6 +173,9 @@ const InputField: React.FC<InputFieldProps> = ({
           {...rest}
           //@ts-expect-error no issue
           onChange={(e) => onChange?.(e, index)}
+          isDisabled={rest.disabled || loading}
+          isLoading={loading}
+          placeholder={loading ? "Loading..." : rest.placeholder || "Select..."}
         />
       );
     }
@@ -176,6 +188,8 @@ const InputField: React.FC<InputFieldProps> = ({
         {...rest}
         style={inputStyle}
         onChange={(e) => onChange?.(e, index)}
+        disabled={rest.disabled || loading}
+        placeholder={loading ? "Loading..." : rest.placeholder}
       />
     );
   };

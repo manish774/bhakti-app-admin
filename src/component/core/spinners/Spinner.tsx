@@ -45,68 +45,93 @@ export const Spinner: React.FC<SpinnerProps> = ({
   gridSize = 3,
   className = "",
 }) => {
-  const baseClass = `spinner ${size} ${color} ${className}`;
+  const wrapperClass = `spinner-wrapper ${className}`;
+  const innerClass = `spinner ${size} ${color}`;
 
   switch (variant) {
     case "dots":
       return (
-        <div className={`${baseClass} spinner-dots`}>
-          {Array.from({ length: count }).map((_, i) => (
-            <span key={i} style={{ animationDelay: `${i * 0.15}s` }} />
-          ))}
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-dots`}>
+            {Array.from({ length: count }).map((_, i) => (
+              <span key={i} style={{ animationDelay: `${i * 0.15}s` }} />
+            ))}
+          </div>
         </div>
       );
 
     case "bars":
       return (
-        <div className={`${baseClass} spinner-bars`}>
-          {Array.from({ length: count }).map((_, i) => (
-            <span key={i} style={{ animationDelay: `${i * 0.1}s` }} />
-          ))}
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-bars`}>
+            {Array.from({ length: count }).map((_, i) => (
+              <span key={i} style={{ animationDelay: `${i * 0.1}s` }} />
+            ))}
+          </div>
         </div>
       );
 
     case "pulse":
-      return <div className={`${baseClass} spinner-pulse`} />;
+      return (
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-pulse`} />
+        </div>
+      );
 
     case "ring":
-      return <div className={`${baseClass} spinner-ring`} />;
+      return (
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-ring`} />
+        </div>
+      );
 
     case "dual-ring":
       return (
-        <div className={`${baseClass} spinner-dual-ring`}>
-          <span />
-          <span />
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-dual-ring`}>
+            <span />
+            <span />
+          </div>
         </div>
       );
 
     case "orbit":
       return (
-        <div className={`${baseClass} spinner-orbit`}>
-          <span className="orbit-dot" />
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-orbit`}>
+            <span className="orbit-dot" />
+          </div>
         </div>
       );
 
     case "grid":
       return (
-        <div className={`${baseClass} spinner-grid grid-${gridSize}`}>
-          {Array.from({ length: gridSize * gridSize }).map((_, i) => (
-            <span key={i} style={{ animationDelay: `${i * 0.1}s` }} />
-          ))}
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-grid grid-${gridSize}`}>
+            {Array.from({ length: gridSize * gridSize }).map((_, i) => (
+              <span key={i} style={{ animationDelay: `${i * 0.1}s` }} />
+            ))}
+          </div>
         </div>
       );
 
     case "ripple":
       return (
-        <div className={`${baseClass} spinner-ripple`}>
-          <span />
-          <span />
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-ripple`}>
+            <span />
+            <span />
+          </div>
         </div>
       );
 
     case "circular":
     default:
-      return <div className={`${baseClass} spinner-circular`} />;
+      return (
+        <div className={wrapperClass}>
+          <div className={`${innerClass} spinner-circular`} />
+        </div>
+      );
   }
 };
 

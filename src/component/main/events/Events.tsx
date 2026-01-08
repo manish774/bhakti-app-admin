@@ -13,13 +13,15 @@ import CreateEvent from "./CreateEvent";
 
 const Events = () => {
   const { events, loading } = useEvent({ autoFetch: true });
-  const { fetchPackageByIDs } = usePackage({ autoFetch: false });
+  const { fetchPackageByIDs, loading: packageLoading } = usePackage({
+    autoFetch: false,
+  });
   const { fetchTemplesByIDs, loading: templeLoading } = useTemple({
     autoFetch: false,
   });
 
   const [packages, setPackages] = useState<Record<string, any>>({});
-  const [packageLoading, setPackageLoading] = useState(false);
+  // const [packageLoading, setPackageLoading] = useState(false);
   const navigate = useNavigate();
   const [temple, setTemple] = useState<Record<string, any>>({});
   const [editId, setEditId] = useState<string>(null);
@@ -41,7 +43,7 @@ const Events = () => {
       name: "Temples",
       render: (x) => {
         return templeLoading ? (
-          <Spinner />
+          <Spinner color={"primary"} size={"xs"} />
         ) : (
           x?.templeId?.map((y) => (
             <span style={{ padding: 5 }}>
@@ -60,7 +62,7 @@ const Events = () => {
       name: "Packages included",
       render: (x) => {
         return packageLoading ? (
-          <Spinner variant="bars" />
+          <Spinner variant="bars" color={"primary"} size={"xs"} />
         ) : (
           x?.packageId?.map((y) => (
             <span style={{ padding: 5 }}>
@@ -125,7 +127,7 @@ const Events = () => {
     if (!ids.length) return;
 
     let isMounted = true;
-    setPackageLoading(true);
+    // setPackageLoading(true);
 
     fetchPackageByIDs(ids)
       .then((res) => {
@@ -139,7 +141,7 @@ const Events = () => {
       })
       .finally(() => {
         if (isMounted) {
-          setPackageLoading(false);
+          // setPackageLoading(false);
         }
       });
 
@@ -148,7 +150,7 @@ const Events = () => {
     };
   }, [ids, fetchPackageByIDs]);
 
-  if (loading || packageLoading) return <Spinner />;
+  if (loading) return <Spinner />;
 
   const addNewEventHandler = () => {
     navigate("createEvent");

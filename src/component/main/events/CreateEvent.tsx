@@ -9,6 +9,7 @@ import Services from "../../../services/Services";
 import { usePackage } from "../../../services/Package/usePackage";
 import "./event.css";
 import { useNotification } from "../../../context/Notification";
+import { parseApiError } from "../../../services/apiError";
 import type { EventProps } from "../../../services/Event/event.types";
 
 type IPackagePriceData = {
@@ -43,6 +44,7 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
   const { loading: pkgLoading, packages } = usePackage({ autoFetch: true });
   const service = Services.getInstance();
   const [templeList, setTempleList] = useState([]);
+  const [templeLoading, setTempleLoading] = useState(false);
 
   // Initialize formData with values in edit mode
   const [formData, setFormData] = useState<Record<string, any>>({});
@@ -83,68 +85,73 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
   const notify = useNotification();
 
   const eventConfig = useMemo(
-    () => [
-      {
-        label: "Event Name",
-        type: "text",
-        name: "eventName",
-        required: true,
-        value: formData.eventName || "",
-      },
-      {
-        label: "Select Temples",
-        type: "select",
-        name: "templeId",
-        required: true,
-        options: (templeList || [])?.map((x) => ({
-          label: x.name,
-          value: x._id,
-        })),
-        multiple: true,
-        value: formData.templeId || [],
-      },
-      {
-        label: "Select Packages",
-        type: "select",
-        name: "packageId",
-        required: true,
-        multiple: true,
-        options: (packages || [])?.map((x) => ({
-          label: x.name,
-          value: x._id,
-        })),
-        value: formData.packageId || [],
-      },
-      {
-        label: "Event Start Date",
-        type: "datetime-local" as const,
-        name: "eventStartTime",
-        required: true,
-        value: formData.eventStartTime || "",
-      },
-      {
-        label: "Event Expiry Date",
-        type: "datetime-local" as const,
-        name: "eventExpirationTime",
-        required: true,
-        value: formData.eventExpirationTime || "",
-      },
-      {
-        label: "Is Popular",
-        type: "checkbox",
-        name: "isPopular",
-        required: true,
-        checked: formData.isPopular || false,
-      },
-    ] as InputFieldProps[],
-    [packages, templeList, formData]
+    () =>
+      [
+        {
+          label: "Event Name",
+          type: "text",
+          name: "eventName",
+          required: true,
+          value: formData.eventName || "",
+        },
+        {
+          label: "Select Temples",
+          type: "select",
+          name: "templeId",
+          required: true,
+          options: (templeList || [])?.map((x) => ({
+            label: x.name,
+            value: x._id,
+          })),
+          multiple: true,
+          value: formData.templeId || [],
+          loading: templeLoading,
+        },
+        {
+          label: "Select Packages",
+          type: "select",
+          name: "packageId",
+          required: true,
+          multiple: true,
+          options: (packages || [])?.map((x) => ({
+            label: x.name,
+            value: x._id,
+          })),
+          value: formData.packageId || [],
+          loading: pkgLoading,
+        },
+        {
+          label: "Event Start Date",
+          type: "datetime-local" as const,
+          name: "eventStartTime",
+          required: true,
+          value: formData.eventStartTime || "",
+        },
+        {
+          label: "Event Expiry Date",
+          type: "datetime-local" as const,
+          name: "eventExpirationTime",
+          required: true,
+          value: formData.eventExpirationTime || "",
+        },
+        {
+          label: "Is Popular",
+          type: "checkbox",
+          name: "isPopular",
+          required: true,
+          checked: formData.isPopular || false,
+        },
+      ] as InputFieldProps[],
+    [packages, templeList, formData, pkgLoading, templeLoading]
   );
 
   useEffect(() => {
+    setTempleLoading(true);
     service.getAllTemples().then((resp) => {
       setTempleList(resp);
+      setTempleLoading(false);
     });
-  }, []);
+  }, [service]);
 
   const formatValue = (value: any) => {
     return value;
@@ -238,8 +245,8 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
           "success"
         );
       })
-      .catch(() => {
-        notify("Somthing went wrong!", "error");
+      .catch((error: any) => {
+        notify(parseApiError(error), "error");
       })
       .finally(() => {
         // if (values?.editId) {
@@ -268,8 +275,6 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
     ) => {
       updatePackagePriceData(id, field, e.target.value);
     };
-
-  if (pkgLoading) return <Spinner variant="circular" />;
 
   return (
     <>

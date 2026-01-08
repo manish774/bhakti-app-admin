@@ -1,5 +1,6 @@
 // apiClient.ts
 import axios from "axios";
+import { parseApiError } from "./apiError";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL, // Use proxy path in development
@@ -29,6 +30,14 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Attach a human readable message so callers (components) can show it in the UI
+    try {
+      const apiMessage = parseApiError(error);
+      (error as any).apiMessage = apiMessage;
+    } catch (e) {
+      // ignore parse errors
+    }
+
     if (error.response?.status === 401) {
       // Clear the token but don't force reload in development
       localStorage.removeItem("authToken");

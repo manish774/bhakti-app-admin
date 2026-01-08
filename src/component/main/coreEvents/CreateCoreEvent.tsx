@@ -6,6 +6,7 @@ import { useCoreEvent } from "../../../services/CoreEvent/useCoreEvent";
 import type { InputFieldProps } from "../../core/types";
 import { useEffect, useMemo, useState } from "react";
 import { useNotification } from "../../../context/Notification";
+import { parseApiError } from "../../../services/apiError";
 import type { CoreEventProps } from "../../../services/CoreEvent/coreevent.types";
 
 const CoreEventIds = [
@@ -136,8 +137,8 @@ const CreateCoreEvent = ({ mode = "add", values, setEditId }: any) => {
         );
         setEditId(null);
       })
-      .catch(() => {
-        notify("Something went wrong!", "error");
+      .catch((error: any) => {
+        notify(parseApiError(error), "error");
       });
   };
 
