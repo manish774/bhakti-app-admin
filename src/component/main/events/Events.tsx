@@ -10,6 +10,7 @@ import { useTemple } from "../../../services/Temple/useTemple";
 import Badge from "../../core/Badge/Badge";
 import { LuPencil } from "react-icons/lu";
 import CreateEvent from "./CreateEvent";
+import { useCoreEvent } from "../../../services/CoreEvent/useCoreEvent";
 
 const Events = () => {
   const { events, loading } = useEvent({ autoFetch: true });
@@ -20,6 +21,10 @@ const Events = () => {
     autoFetch: false,
   });
 
+  const { coreEvents, loading: coreEventLoading } = useCoreEvent({
+    autoFetch: true,
+  });
+
   const [packages, setPackages] = useState<Record<string, any>>({});
   // const [packageLoading, setPackageLoading] = useState(false);
   const navigate = useNavigate();
@@ -27,6 +32,18 @@ const Events = () => {
   const [editId, setEditId] = useState<string>(null);
 
   const columns: ColumnProps[] = [
+    {
+      id: "coreEventId",
+      name: "Core Event",
+      render: (x) => {
+        return coreEventLoading ? (
+          <Spinner color={"primary"} size={"xs"} />
+        ) : (
+          coreEvents?.find((ce) => ce.type === x.coreEventId)?.title || "N/A"
+        );
+      },
+    },
+
     {
       id: "eventName",
       name: "Name of Event",
@@ -155,6 +172,8 @@ const Events = () => {
   const addNewEventHandler = () => {
     navigate("createEvent");
   };
+
+  console.log(coreEvents);
 
   return (
     <div>

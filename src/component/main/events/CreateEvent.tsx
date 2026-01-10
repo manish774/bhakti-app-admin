@@ -11,6 +11,7 @@ import "./event.css";
 import { useNotification } from "../../../context/Notification";
 import { parseApiError } from "../../../services/apiError";
 import type { EventProps } from "../../../services/Event/event.types";
+import { useCoreEvent } from "../../../services/CoreEvent/useCoreEvent";
 
 type IPackagePriceData = {
   id: string;
@@ -42,6 +43,9 @@ type PriceField = "price" | "discount";
 const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
   const { loading, create, update } = useEvent({ autoFetch: false });
   const { loading: pkgLoading, packages } = usePackage({ autoFetch: true });
+  const { coreEvents, loading: coreEventLoading } = useCoreEvent({
+    autoFetch: true,
+  });
   const service = Services.getInstance();
   const [templeList, setTempleList] = useState([]);
   const [templeLoading, setTempleLoading] = useState(false);
@@ -52,6 +56,14 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
   useEffect(() => {
     if (mode === Modes.EDIT && values) {
       setFormData({
+        coreEventId: values?.events?.coreEventId
+          ? {
+              label: coreEvents?.find(
+                (ce) => ce.type === values?.events?.coreEventId
+              )?.title,
+              value: values?.events?.coreEventId,
+            }
+          : null,
         eventName: values?.events?.eventName || "",
         eventStartTime: values?.events?.eventStartTime,
         eventExpirationTime: values?.events?.eventExpirationTime,
@@ -84,9 +96,23 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
     useState<IPackagePriceData[]>();
   const notify = useNotification();
 
+  console.log(formData);
   const eventConfig = useMemo(
     () =>
       [
+        {
+          label: "Core Event ID",
+          type: "select",
+          name: "coreEventId",
+          options:
+            coreEvents &&
+            coreEvents?.map((ce) => ({
+              label: ce.title,
+              value: ce.type,
+            })),
+          required: true,
+          value: formData?.coreEventId || {},
+        },
         {
           label: "Event Name",
           type: "text",
@@ -142,7 +168,7 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
           checked: formData.isPopular || false,
         },
       ] as InputFieldProps[],
-    [packages, templeList, formData, pkgLoading, templeLoading]
+    [packages, templeList, formData, pkgLoading, templeLoading, coreEvents]
   );
 
   useEffect(() => {
