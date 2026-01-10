@@ -3,7 +3,7 @@ import type { BookingProps, UpdateBookingPayload } from "./bookings.types";
 
 export const BookingAPI = {
   getBookings: async (): Promise<BookingProps[]> => {
-    const result = await apiClient.get("api/booking/get");
+    const result = await apiClient.get("api/admin/bookings");
     if (!result) throw Error("Some issue");
     return result.data;
   },
@@ -13,7 +13,7 @@ export const BookingAPI = {
     return result.data;
   },
   createBooking: async (payload: BookingProps): Promise<BookingProps> => {
-    const result = await apiClient.post("api/booking/create", { ...payload });
+    const result = await apiClient.post("api/admin/bookings", { ...payload });
     return result.data;
   },
   deleteBooking: async ({ id }: { id: string }): Promise<BookingProps> => {

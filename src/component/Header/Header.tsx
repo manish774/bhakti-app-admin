@@ -10,7 +10,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
         ☰
       </button>
 
-      <h3>Dashboard</h3>
+      <h3>Everything begins and ends with Prabhu Shiv.</h3>
     </header>
   );
 };

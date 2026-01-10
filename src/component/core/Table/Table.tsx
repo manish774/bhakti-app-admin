@@ -16,7 +16,7 @@ import TableFooter from "../generic/Table/TableFooter";
 import Input from "../generic/Input";
 // import Input from "../generic/Input";
 
-const Table = ({ records, config, pageSize }: TableProps) => {
+const Table = ({ records, config, pageSize, loading }: TableProps) => {
   const [currentPagination, setCurrentPagination] = useState<number>(1);
   const [currentRecord, setCurrentRecords] = useState<any[]>([]);
   const [completeRecord, setCompleteRecord] = useState(records || []);
@@ -225,9 +225,14 @@ const Table = ({ records, config, pageSize }: TableProps) => {
           </thead>
           <tbody>
             {rows}
+            {loading && (
+              <tr>
+                <td colSpan={config?.columns?.length}>Loading...</td>
+              </tr>
+            )}
             {!completeRecord?.length && (
               <tr>
-                <td colSpan={3}>No records found</td>
+                <td colSpan={config?.columns?.length}>No records found</td>
               </tr>
             )}
           </tbody>

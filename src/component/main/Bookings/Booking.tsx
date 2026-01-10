@@ -47,33 +47,19 @@ const Bookings = () => {
         return templeLoading ? (
           <Spinner color={"primary"} size={"xs"} />
         ) : (
-          x?.templeId?.map((y) => (
-            <span key={y} style={{ padding: 5 }}>
+          x?.templeId && (
+            <span key={x.templeId?._id} style={{ padding: 5 }}>
               <Badge
-                label={temples[y]?.name || "N/A"}
+                label={x.templeId.name || "N/A"}
                 type={"bordered"}
                 style={{ background: "grey", color: "#fff" }}
               />
             </span>
-          ))
+          )
         );
       },
     },
-    {
-      id: "pujas",
-      name: "Pujas",
-      render: (x) => {
-        return x?.pujaId?.map((y) => (
-          <span key={y} style={{ padding: 5 }}>
-            <Badge
-              label={pujas[y]?.name || "N/A"}
-              type={"bordered"}
-              style={{ background: "grey", color: "#fff" }}
-            />
-          </span>
-        ));
-      },
-    },
+
     {
       id: "packages",
       name: "Packages",
@@ -81,15 +67,13 @@ const Bookings = () => {
         return packageLoading ? (
           <Spinner variant="bars" color={"primary"} size={"xs"} />
         ) : (
-          x?.packageId?.map((y) => (
-            <span key={y} style={{ padding: 5 }}>
-              <Badge
-                label={packages[y]?.name || "N/A"}
-                type={"bordered"}
-                style={{ background: "grey", color: "#fff" }}
-              />
-            </span>
-          ))
+          <span key={x.packageId} style={{ padding: 5 }}>
+            <Badge
+              label={packages[x.packageId]?.name || "N/A"}
+              type={"bordered"}
+              style={{ background: "grey", color: "#fff" }}
+            />
+          </span>
         );
       },
     },

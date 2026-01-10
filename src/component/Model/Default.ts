@@ -35,4 +35,5 @@ export interface TableProps {
   records: any[];
   pageSize: number;
   config: tableConfig;
+  loading?: boolean;
 }

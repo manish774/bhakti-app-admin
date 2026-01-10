@@ -16,6 +16,7 @@ import { useCoreEvent } from "../../../services/CoreEvent/useCoreEvent";
 import { useEvent } from "../../../services/Event/useEvent";
 import { useUser } from "../../../services/user/useUsers";
 import { useTemple } from "../../../services/Temple/useTemple";
+import { formatPayload } from "../utils/util";
 
 const Modes = {
   EDIT: "edit",
@@ -151,7 +152,7 @@ const CreateBooking = ({ mode = Modes.ADD, values }: EMode) => {
           required: true,
           options: coreEvents?.map((x) => ({
             label: x.title,
-            value: x._id,
+            value: x.type,
           })),
           value: formData.coreType || "",
           loading: coreEventLoading,
@@ -174,7 +175,7 @@ const CreateBooking = ({ mode = Modes.ADD, values }: EMode) => {
           name: "userId",
           required: true,
           options: (users || [])?.map((x) => ({
-            label: x.name || x.email,
+            label: `${x.name} ${x.email}`,
             value: x._id,
           })),
           value: formData.userId || null,
@@ -250,9 +251,7 @@ const CreateBooking = ({ mode = Modes.ADD, values }: EMode) => {
             { label: "Completed", value: "completed" },
             { label: "Cancelled", value: "cancelled" },
           ],
-          value: formData.status
-            ? { label: formData.status, value: formData.status }
-            : null,
+          value: formData.status,
         },
         {
           label: "Payment Status",
@@ -265,9 +264,7 @@ const CreateBooking = ({ mode = Modes.ADD, values }: EMode) => {
             { label: "Failed", value: "failed" },
             { label: "Refunded", value: "refunded" },
           ],
-          value: formData.paymentStatus
-            ? { label: formData.paymentStatus, value: formData.paymentStatus }
-            : null,
+          value: formData.paymentStatus,
         },
         {
           label: "Payment ID",
@@ -349,23 +346,25 @@ const CreateBooking = ({ mode = Modes.ADD, values }: EMode) => {
     }
   };
 
+  console.log(formData, "form");
   const onSaveBooking = () => {
-    const payload = {
+    const payload1 = {
       ...formData,
+      coreType: formData.coreType.value || "",
       userId: formData.userId?.value,
-      pujaId: formData.pujaId?.map((x) => x.value),
       templeId: formData.templeId?.map((x) => x.value),
-      packageId: formData.packageId?.map((x) => x.value),
+      packageId: formData.packageId?.map((x) => x.value)[0],
       status: formData.status?.value,
       paymentStatus: formData.paymentStatus?.value,
+      eventId: formData.eventId?.value || "",
       devotees,
     };
 
+    const payload = formatPayload.call(payload1);
+
     (values?.editId
-      ? //@ts-expect-error ignore
-        updateBooking({ ...payload, id: values.editId })
-      : //@ts-expect-error ignore
-        createBooking(payload)
+      ? updateBooking({ ...payload, id: values.editId })
+      : createBooking(payload)
     )
       .then(() => {
         notify(
