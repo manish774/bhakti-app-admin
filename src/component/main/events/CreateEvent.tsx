@@ -43,7 +43,7 @@ type PriceField = "price" | "discount";
 const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
   const { loading, create, update } = useEvent({ autoFetch: false });
   const { loading: pkgLoading, packages } = usePackage({ autoFetch: true });
-  const { coreEvents, loading: coreEventLoading } = useCoreEvent({
+  const { coreEvents } = useCoreEvent({
     autoFetch: true,
   });
   const service = Services.getInstance();
@@ -251,12 +251,19 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
   const onSaveEvent = () => {
     const packageId = formData.packageId?.map((x) => x.value);
     const templeId = formData.templeId?.map((x) => x.value);
+    const coreEventId = formData?.coreEventId?.value;
     const pricePackageId = packagePriceData?.map((x) => ({
       packageId: x.id,
       price: x.price,
       discount: x.discount,
     }));
-    const payload = { ...formData, packageId, pricePackageId, templeId };
+    const payload = {
+      ...formData,
+      packageId,
+      pricePackageId,
+      templeId,
+      coreEventId,
+    };
     (values?.editId
       ? //@ts-expect-error payload event name issue
 
