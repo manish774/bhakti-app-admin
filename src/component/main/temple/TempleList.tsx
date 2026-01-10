@@ -1,5 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import Services from "../../../services/Services";
+import { lazy, Suspense, useState } from "react";
 import Table from "../../core/Table/Table";
 
 import "./TempleList.css";
