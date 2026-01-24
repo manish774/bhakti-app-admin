@@ -4,6 +4,8 @@ import Table from "../../core/Table/Table";
 import "./TempleList.css";
 import { useTemple } from "../../../services/Temple/useTemple";
 import Spinner from "../../core/spinners/Spinner";
+import Button from "../../core/button/Button";
+import { LuPencil } from "react-icons/lu";
 
 const PreviewPanel = lazy(() => import("../Preview/Preview"));
 
@@ -23,6 +25,7 @@ const TempleList = () => {
     setSelectedRow(args._id);
   };
 
+  const onEdit = () => {};
   return (
     <div className="temple-list-container">
       <div className="table">
@@ -43,6 +46,17 @@ const TempleList = () => {
                   name: "location",
                   id: "location",
                   render: (x) => x.location.addressLine1,
+                },
+                {
+                  name: "",
+                  id: "",
+                  render: () => {
+                    return (
+                      <Button size={"xsmall"} onClick={() => onEdit()}>
+                        <LuPencil />
+                      </Button>
+                    );
+                  },
                 },
               ],
             }}

@@ -54,14 +54,16 @@ export const useEvent = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const created = await controller.createEvent(payload);
-        setState((prev) => ({ ...prev, loading: false, error: "" }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return created;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to create Events";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: err instanceof Error ? err.message : "Failed to create Events",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -90,14 +92,16 @@ export const useEvent = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const updated = await controller.updateEvent(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return updated;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to update Event";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: err instanceof Error ? err.message : "Failed to update Event",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]

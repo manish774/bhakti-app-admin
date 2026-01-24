@@ -1,25 +1,31 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
 import Services from "../services/Services";
 
-interface UserContextProps {
-  meta: {
-    name: string;
-    email: string;
-  };
-  isLoading: boolean;
+interface UserMeta {
+  name: string;
+  email: string;
 }
+
+interface UserContextProps {
+  meta: UserMeta;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+}
+
 const defaultValue: UserContextProps = {
   meta: {
     name: "",
     email: "",
   },
   isLoading: true,
+  isAuthenticated: false,
 };
 
-export type AppAction = {
-  type: "loginDetails" | "logout" | "setLoading" | "initComplete";
-  payload?: UserContextProps;
-};
+export type AppAction =
+  | { type: "loginDetails"; payload: UserMeta }
+  | { type: "logout" }
+  | { type: "setLoading" }
+  | { type: "initComplete" };
 
 export interface AppContextType {
   state: UserContextProps;
@@ -28,54 +34,54 @@ export interface AppContextType {
 
 const UserState = createContext<AppContextType | undefined>(undefined);
 
-type UserContext = {
-  children: React.ReactNode;
-};
-
 const loginReducer = (
   state: UserContextProps,
-  action: AppAction
+  action: AppAction,
 ): UserContextProps => {
   switch (action.type) {
     case "loginDetails":
       return {
-        ...state,
-        meta: action.payload?.meta || defaultValue.meta,
+        meta: action.payload,
+        isAuthenticated: true,
         isLoading: false,
       };
+
     case "logout":
-      return { ...defaultValue, isLoading: false };
-    case "setLoading":
       return {
-        ...state,
-        isLoading: true,
-      };
-    case "initComplete":
-      return {
-        ...state,
+        meta: { name: "", email: "" },
+        isAuthenticated: false,
         isLoading: false,
       };
+
+    case "setLoading":
+      return { ...state, isLoading: true };
+
+    case "initComplete":
+      return { ...state, isLoading: false };
+
     default:
       return state;
   }
 };
-export const UserContext = ({ children }: UserContext) => {
+
+export const UserContext = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(loginReducer, defaultValue);
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const services = Services.getInstance();
-      const userProfile = await services.restoreUserSession();
+      try {
+        const services = Services.getInstance();
+        const userProfile = await services.restoreUserSession();
 
-      if (userProfile) {
-        dispatch({
-          type: "loginDetails",
-          payload: {
-            meta: userProfile,
-            isLoading: false,
-          },
-        });
-      } else {
+        if (userProfile?.email) {
+          dispatch({
+            type: "loginDetails",
+            payload: userProfile,
+          });
+        } else {
+          dispatch({ type: "initComplete" });
+        }
+      } catch (e) {
         dispatch({ type: "initComplete" });
       }
     };
@@ -92,6 +98,6 @@ export const UserContext = ({ children }: UserContext) => {
 
 export const useUser = () => {
   const ctx = useContext(UserState);
-  if (!ctx) throw Error("wrap it with context dude!");
+  if (!ctx) throw new Error("wrap it with UserContext provider");
   return ctx;
 };

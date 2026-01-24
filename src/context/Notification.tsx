@@ -106,7 +106,7 @@ const styles: Record<string, CSSProperties> = {
     position: "fixed",
     top: "1rem",
     right: "1rem",
-    zIndex: 1000,
+    zIndex: 999999,
     display: "flex",
     flexDirection: "column",
     gap: "0.5rem",

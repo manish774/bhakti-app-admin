@@ -12,11 +12,13 @@ const Login = () => {
     email: "manishranbir774@gmail.com",
     password: "Hello1*#",
   });
+
   useEffect(() => {
     if (ctx?.state.meta.email) {
+      console.log(ctx);
       navigate("/");
     }
-  }, [ctx?.state.meta]);
+  }, [ctx?.state.meta, navigate, ctx]);
 
   const service = useMemo(() => Services.getInstance(), []);
 
@@ -28,6 +30,7 @@ const Login = () => {
       ctx.dispatch({
         type: "loginDetails",
         payload: {
+          //@ts-expect-error err
           meta: {
             name: userData?.name || "",
             email: userData?.email || "",

@@ -85,14 +85,17 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./component/routes/Routes";
 import { UserContext } from "./context/UserContext";
 import { NotificationProvider } from "./context/Notification";
+import GeneralContext from "./context/general-context/GeneralContext";
 
 const App = () => {
   return (
-    <UserContext>
-      <NotificationProvider>
-        <RouterProvider router={router} />
-      </NotificationProvider>
-    </UserContext>
+    <GeneralContext>
+      <UserContext>
+        <NotificationProvider>
+          <RouterProvider router={router} />
+        </NotificationProvider>
+      </UserContext>
+    </GeneralContext>
   );
 };
 

@@ -1,7 +1,14 @@
 import { EventAPI } from "./event.api";
 import type { EventProps } from "./event.types";
 
-export class EventController {
+export interface IEventController {
+  getEvents(): Promise<EventProps[]>;
+  updateEvent(payload: EventProps): Promise<EventProps>;
+  deleteEvent(params: { id: string }): Promise<EventProps>;
+  createEvent(payload: EventProps): Promise<EventProps>;
+}
+
+export class EventController implements IEventController {
   private static instance: EventController;
 
   public static getInstance() {

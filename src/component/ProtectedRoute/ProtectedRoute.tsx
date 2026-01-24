@@ -4,15 +4,11 @@ import { useUser } from "../../context/UserContext";
 const ProtectedRoute = () => {
   const { state } = useUser();
 
-  // ⛔ VERY IMPORTANT: wait for auth resolution
   if (state.isLoading) {
-    return null; // or a spinner
+    return <div style={{ padding: 40 }}>Checking authentication...</div>;
   }
 
-  const isLoggedIn =
-    Boolean(state?.meta?.email) && state.meta.email.trim() !== "";
-
-  if (!isLoggedIn) {
+  if (!state.isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

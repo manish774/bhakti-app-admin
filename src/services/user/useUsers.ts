@@ -56,14 +56,16 @@ export const useUser = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const createdUser = await controller.createUser(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return createdUser;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to create user";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: err instanceof Error ? err.message : "Failed to create user",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -74,14 +76,16 @@ export const useUser = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const deletedUser = await controller.deleteUser({ id });
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return deletedUser;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to delete user";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: err instanceof Error ? err.message : "Failed to delete user",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -92,14 +96,16 @@ export const useUser = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const updatedUser = await controller.updateUser(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return updatedUser;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to update user";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: err instanceof Error ? err.message : "Failed to update user",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]

@@ -90,7 +90,7 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
       setFormData({});
       setPackagePriceData([]);
     }
-  }, [values, mode]);
+  }, [values, mode, coreEvents]);
 
   const [packagePriceData, setPackagePriceData] =
     useState<IPackagePriceData[]>();
@@ -248,45 +248,38 @@ const CreateEvent = ({ mode = Modes.ADD, values }: EMode) => {
     }
   };
 
-  const onSaveEvent = () => {
-    const packageId = formData.packageId?.map((x) => x.value);
-    const templeId = formData.templeId?.map((x) => x.value);
-    const coreEventId = formData?.coreEventId?.value;
-    const pricePackageId = packagePriceData?.map((x) => ({
-      packageId: x.id,
-      price: x.price,
-      discount: x.discount,
-    }));
-    const payload = {
-      ...formData,
-      packageId,
-      pricePackageId,
-      templeId,
-      coreEventId,
-    };
-    (values?.editId
-      ? //@ts-expect-error payload event name issue
+  const onSaveEvent = async () => {
+    try {
+      const packageId = formData.packageId?.map((x) => x.value);
+      const templeId = formData.templeId?.map((x) => x.value);
+      const coreEventId = formData?.coreEventId?.value;
 
-        update({ ...payload, id: values.editId })
-      : //@ts-expect-error payload event name issue
+      const pricePackageId = packagePriceData?.map((x) => ({
+        packageId: x.id,
+        price: x.price,
+        discount: x.discount,
+      }));
 
-        create(payload)
-    )
-      .then(() => {
-        notify(
-          `Event ${values?.editId ? "Updated" : "Added"} successfully`,
-          "success"
-        );
-      })
-      .catch((error: any) => {
-        notify(parseApiError(error), "error");
-      })
-      .finally(() => {
-        // if (values?.editId) {
-        //   setEditId("ADD");
-        //   setFormData({});
-        // }
-      });
+      const payload = {
+        ...formData,
+        packageId,
+        pricePackageId,
+        templeId,
+        coreEventId,
+      };
+
+      if (values?.editId) {
+        await update({ ...payload, id: values.editId } as any);
+        notify("Event Updated successfully", "success");
+      } else {
+        await create(payload as any);
+        notify("Event Added successfully", "success");
+      }
+    } catch (err: any) {
+      const errorMessage = parseApiError(err);
+      notify(errorMessage, "error");
+      console.error("Error saving event:", err);
+    }
   };
 
   const updatePackagePriceData = (

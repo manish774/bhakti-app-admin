@@ -10,8 +10,10 @@ export interface SelectOption {
   value: string;
 }
 
-interface InputFieldProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+interface InputFieldProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "onChange"
+> {
   label?: string;
   type?: string;
   error?: string;
@@ -25,7 +27,7 @@ interface InputFieldProps
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
-    index?: number
+    index?: number,
   ) => void;
 
   onFileSelect?: (files: File[], index?: number) => void;
@@ -64,10 +66,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onFileSelect }) => {
   );
 };
 
-/* ========================================
- * InputField
- * ====================================== */
-
 const InputField: React.FC<InputFieldProps> = ({
   label,
   type = "text",
@@ -83,8 +81,6 @@ const InputField: React.FC<InputFieldProps> = ({
 }) => {
   const [activeFields, setActiveFields] = useState(1);
 
-  /* ---------- Styles ---------- */
-
   const inputStyle: React.CSSProperties = {
     height: type === "textarea" ? "auto" : "35px",
     padding: "10px 14px",
@@ -95,8 +91,8 @@ const InputField: React.FC<InputFieldProps> = ({
     background: error
       ? "#fff5f5"
       : rest.disabled || loading
-      ? "#d4c4a8"
-      : "#f5eed8",
+        ? "#d4c4a8"
+        : "#f5eed8",
     color: loading ? "#666" : "#000",
     width: "100%",
     boxSizing: "border-box",
@@ -187,6 +183,7 @@ const InputField: React.FC<InputFieldProps> = ({
         type={type}
         {...rest}
         style={inputStyle}
+        // className={classes.input}
         onChange={(e) => onChange?.(e, index)}
         disabled={rest.disabled || loading}
         placeholder={loading ? "Loading..." : rest.placeholder}

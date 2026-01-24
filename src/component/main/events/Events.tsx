@@ -11,6 +11,7 @@ import Badge from "../../core/Badge/Badge";
 import { LuPencil } from "react-icons/lu";
 import CreateEvent from "./CreateEvent";
 import { useCoreEvent } from "../../../services/CoreEvent/useCoreEvent";
+import { useGeneralContexts } from "../../../context/general-context/GeneralContext";
 
 const Events = () => {
   const { events, loading } = useEvent({ autoFetch: true });
@@ -24,6 +25,8 @@ const Events = () => {
   const { coreEvents, loading: coreEventLoading } = useCoreEvent({
     autoFetch: true,
   });
+
+  const { controller } = useGeneralContexts();
 
   const [packages, setPackages] = useState<Record<string, any>>({});
   // const [packageLoading, setPackageLoading] = useState(false);
@@ -120,13 +123,13 @@ const Events = () => {
   const ids = useMemo(
     () => (events?.length ? events.map((x) => x.packageId).flat() : []),
 
-    [events]
+    [events],
   );
 
   const idsTemples = useMemo(
     () => (events?.length ? events.map((x) => x.templeId).flat() : []),
 
-    [events]
+    [events],
   );
 
   useEffect(() => {
@@ -173,10 +176,9 @@ const Events = () => {
     navigate("createEvent");
   };
 
-  console.log(coreEvents);
-
   return (
     <div>
+      <button onClick={() => controller.updateNumber()}>ee</button>
       <Table
         records={[...events]}
         pageSize={5}

@@ -8,7 +8,7 @@ export default defineConfig({
     host: true, // Allow external connections
     proxy: {
       "/api": {
-        target: "https://api.jalsuvidha.com",
+        target: "http://localhost:8080",
         changeOrigin: true,
         secure: true, // Use true for HTTPS
         rewrite: (path) => path, // Keep the /api prefix - don't remove it

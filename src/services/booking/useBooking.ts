@@ -56,15 +56,16 @@ export const useBooking = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const createdBooking = await controller.createBooking(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return createdBooking;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to create booking";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to create booking",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -75,15 +76,16 @@ export const useBooking = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const deletedBooking = await controller.deleteBooking({ id });
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return deletedBooking;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to delete booking";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to delete booking",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -94,15 +96,16 @@ export const useBooking = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const updatedBooking = await controller.updateBooking(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return updatedBooking;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to update booking";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to update booking",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]

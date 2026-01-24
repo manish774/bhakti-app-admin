@@ -54,15 +54,17 @@ export const usePackage = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const deletedPackage = await controller.createPackage(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return deletedPackage;
       } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create package";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to fetch packages",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -72,15 +74,17 @@ export const usePackage = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const deletedPackage = await controller.deletePackage({ id });
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return deletedPackage;
       } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to delete package";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to delete packages",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -90,15 +94,17 @@ export const usePackage = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const deletedPackage = await controller.updatePacakage(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return deletedPackage;
       } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to update package";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to update packages",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -108,7 +114,6 @@ export const usePackage = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const data = await controller.getByIds({ ids });
-        console.log(data);
         setState((prev) => ({
           ...prev,
           loading: false,

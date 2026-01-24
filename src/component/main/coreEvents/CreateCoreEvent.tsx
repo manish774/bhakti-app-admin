@@ -76,13 +76,13 @@ const CreateCoreEvent = ({ mode = "add", values, setEditId }: any) => {
         },
         {
           label: "Color",
-          type: "text",
+          type: "color",
           name: "color",
           value: formData.color || "",
         },
         {
           label: "Shadow Color",
-          type: "text",
+          type: "color",
           name: "shadowColor",
           value: formData.shadowColor || "",
         },

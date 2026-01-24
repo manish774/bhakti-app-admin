@@ -56,15 +56,16 @@ export const useCoreEvent = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const created = await controller.createCoreEvent(payload);
-        setState((prev) => ({ ...prev, loading: false, error: "" }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return created;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to create Core Event";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to create Core Event",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -75,15 +76,16 @@ export const useCoreEvent = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const deleted = await controller.deleteCoreEvent({ type });
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return deleted;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to delete Core Event";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to delete Core Event",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]
@@ -94,15 +96,16 @@ export const useCoreEvent = ({
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const updated = await controller.updateCoreEvent(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return updated;
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Failed to update Core Event";
         setState((prev) => ({
           ...prev,
           loading: false,
-          error:
-            err instanceof Error ? err.message : "Failed to update Core Event",
+          error: errorMessage,
         }));
+        throw err;
       }
     },
     [controller]

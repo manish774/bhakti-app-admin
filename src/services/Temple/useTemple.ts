@@ -77,11 +77,12 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const created = await controller.createTemple(payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return created;
       } catch (err) {
-        setState((prev) => ({ ...prev, loading: false, error: err?.message }));
-        return null;
+        const errorMessage = err instanceof Error ? err.message : "Failed to create temple";
+        setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
+        throw err;
       }
     },
     [controller]
@@ -92,11 +93,12 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const updated = await controller.updateTemple(id, payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return updated;
       } catch (err) {
-        setState((prev) => ({ ...prev, loading: false, error: err?.message }));
-        return null;
+        const errorMessage = err instanceof Error ? err.message : "Failed to update temple";
+        setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
+        throw err;
       }
     },
     [controller]
@@ -107,11 +109,12 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const res = await controller.deleteTemple(id);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return res;
       } catch (err) {
-        setState((prev) => ({ ...prev, loading: false, error: err?.message }));
-        return null;
+        const errorMessage = err instanceof Error ? err.message : "Failed to delete temple";
+        setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
+        throw err;
       }
     },
     [controller]
@@ -122,11 +125,12 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const res = await controller.addPackage(templeId, payload);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return res;
       } catch (err) {
-        setState((prev) => ({ ...prev, loading: false, error: err?.message }));
-        return null;
+        const errorMessage = err instanceof Error ? err.message : "Failed to add package";
+        setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
+        throw err;
       }
     },
     [controller]
@@ -137,11 +141,12 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const res = await controller.deletePackage(templeId, packageId);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return res;
       } catch (err) {
-        setState((prev) => ({ ...prev, loading: false, error: err?.message }));
-        return null;
+        const errorMessage = err instanceof Error ? err.message : "Failed to delete package";
+        setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
+        throw err;
       }
     },
     [controller]
@@ -152,11 +157,12 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
         const res = await controller.addImage(file, templeId);
-        setState((prev) => ({ ...prev, loading: false }));
+        setState((prev) => ({ ...prev, loading: false, error: null }));
         return res;
       } catch (err) {
-        setState((prev) => ({ ...prev, loading: false, error: err?.message }));
-        return null;
+        const errorMessage = err instanceof Error ? err.message : "Failed to add image";
+        setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
+        throw err;
       }
     },
     [controller]
