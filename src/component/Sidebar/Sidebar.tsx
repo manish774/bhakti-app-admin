@@ -11,7 +11,6 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
   return (
     <>
-      {/* Overlay */}
       <div
         className={`sidebar-overlay ${isOpen ? "show" : ""}`}
         onClick={onClose}
