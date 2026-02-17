@@ -39,6 +39,9 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             <NavLink to="/bookings" onClick={onClose}>
               Bookings
             </NavLink>
+            <NavLink to="/pandit" onClick={onClose}>
+              Pandit
+            </NavLink>
           </>
         )}
       </aside>
