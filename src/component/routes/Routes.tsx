@@ -9,6 +9,7 @@ import CreateEvent from "../main/events/CreateEvent";
 import CoreEvents from "../main/coreEvents/CoreEvents";
 import CreateCoreEvent from "../main/coreEvents/CreateCoreEvent";
 import Booking from "../main/Bookings/Booking";
+import Pandit from "../main/pandit/Pandit";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
           { path: "coreevents/create", element: <CreateCoreEvent /> },
           { path: "bookings", element: <Booking /> },
           { path: "events/createEvent", element: <CreateEvent /> },
+          { path: "pandit", element: <Pandit /> },
         ],
       },
     ],
