@@ -21,7 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps<string | number>>(
       labelPosition,
     } = props || {};
     const [inputValue, setInputValue] = useState<any>(
-      props?.value || props?.min || undefined
+      props?.value || props?.min || undefined,
     );
     const [eventObject, setEventObject] = useState<any>();
     const debounceInput = useDebounce(eventObject, debounceTime);
@@ -34,7 +34,7 @@ const Input = forwardRef<HTMLInputElement, InputProps<string | number>>(
 
     useEffect(() => {
       onchangeHandler(debounceInput);
-    }, [debounceInput]);
+    }, [debounceInput, onchangeHandler]);
 
     const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (
@@ -73,7 +73,7 @@ const Input = forwardRef<HTMLInputElement, InputProps<string | number>>(
         />
       </>
     );
-  }
+  },
 );
 
 export default Input;

@@ -79,4 +79,8 @@ const Login = () => {
   );
 };
 
+Login.skeleton = () => {
+  return <div>Loading</div>;
+};
+
 export default Login;

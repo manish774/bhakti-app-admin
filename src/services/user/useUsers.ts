@@ -59,7 +59,8 @@ export const useUser = ({
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return createdUser;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to create user";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create user";
         setState((prev) => ({
           ...prev,
           loading: false,
@@ -68,7 +69,7 @@ export const useUser = ({
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   const deleteUser = useCallback(
@@ -79,7 +80,8 @@ export const useUser = ({
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return deletedUser;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to delete user";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to delete user";
         setState((prev) => ({
           ...prev,
           loading: false,
@@ -88,7 +90,7 @@ export const useUser = ({
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   const updateUser = useCallback(
@@ -99,7 +101,8 @@ export const useUser = ({
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return updatedUser;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to update user";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to update user";
         setState((prev) => ({
           ...prev,
           loading: false,
@@ -108,7 +111,7 @@ export const useUser = ({
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   const fetchUserByIDs = useCallback(
@@ -134,7 +137,7 @@ export const useUser = ({
         }));
       }
     },
-    [controller]
+    [controller],
   );
 
   useEffect(() => {

@@ -17,7 +17,7 @@ const PanditList = ({
   return (
     <Table
       records={[...records]}
-      pageSize={10}
+      pageSize={5}
       config={{
         paginationRequired: true,
         title: "",
@@ -31,7 +31,12 @@ const PanditList = ({
           { name: "address", id: "address" },
           { name: "email", id: "email" },
           { name: "phone", id: "phone" },
-          { name: "extraInfo", id: "extraInfo" },
+          {
+            name: "extraInfo",
+            id: "extraInfo",
+            searchable: true,
+            sortable: true,
+          },
 
           {
             name: "",
