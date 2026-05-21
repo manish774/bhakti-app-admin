@@ -6,8 +6,8 @@ interface HeaderProps {
 }
 
 const Header = ({ onMenuClick }: HeaderProps) => {
-  const fullName = useUser();
-  const firstLetter = fullName.state.meta.name.slice(0, 1);
+  const user = useUser();
+  const firstLetter = user?.state.meta?.name?.slice(0, 1);
   const logoutButton = () => {
     localStorage.removeItem("authToken");
     window.location.href = "/login";
@@ -29,8 +29,8 @@ const Header = ({ onMenuClick }: HeaderProps) => {
         }
         content={
           <div>
-            <div>{fullName.state.meta.name}</div>
-            <div>{fullName.state.meta.email}</div>
+            <div>{user.state.meta.name}</div>
+            <div>{user.state.meta.email}</div>
             <div>
               <button onClick={logoutButton}>Logout</button>
             </div>

@@ -178,7 +178,6 @@ const Events = () => {
 
   return (
     <div>
-      <button onClick={() => controller.updateNumber()}>ee</button>
       <Table
         records={[...events]}
         pageSize={5}
