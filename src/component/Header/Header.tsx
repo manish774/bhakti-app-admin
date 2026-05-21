@@ -9,7 +9,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
   const user = useUser();
   const firstLetter = user?.state.meta?.name?.slice(0, 1);
   const logoutButton = () => {
-    localStorage.removeItem("authToken.");
+    localStorage.removeItem("authToken");
     window.location.href = "/login";
   };
   return (
