@@ -6,7 +6,7 @@ import type {
   Temple,
   ApiResponse,
   Package,
-} from "../types/api";
+} from "../types/data";
 
 class Services {
   private static instance: Services;
@@ -57,7 +57,7 @@ class Services {
   }
 
   public async addTemple(
-    templeData: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">
+    templeData: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">,
   ): Promise<Temple> {
     //const file = this.addToFormData(templeData, true);
     const formData = this.addToFormData(templeData);
@@ -71,11 +71,11 @@ class Services {
 
   public async updateTemple(
     templeId: string,
-    templeData: Partial<Temple>
+    templeData: Partial<Temple>,
   ): Promise<Temple> {
     const response = await apiClient.put(
       `/api/admin/temples/${templeId}`,
-      templeData
+      templeData,
     );
 
     return response.data;
@@ -92,11 +92,11 @@ class Services {
 
   public async addPackage(
     templeId: string,
-    packageData: Omit<Package, "id">
+    packageData: Omit<Package, "id">,
   ): Promise<Temple> {
     const response = await apiClient.post(
       `/api/admin/temples/${templeId}/packages`,
-      packageData
+      packageData,
     );
 
     // Emit event to notify dashboard of data change
@@ -107,10 +107,10 @@ class Services {
 
   public async deletePackage(
     templeId: string,
-    packageId: string
+    packageId: string,
   ): Promise<{ success: boolean }> {
     const response = await apiClient.delete(
-      `/api/admin/temples/${templeId}/packages/${packageId}`
+      `/api/admin/temples/${templeId}/packages/${packageId}`,
     );
 
     // Emit event to notify dashboard of data change
@@ -120,7 +120,7 @@ class Services {
   }
 
   public async login(
-    credentials: LoginCredentials
+    credentials: LoginCredentials,
   ): Promise<ApiResponse<{ token: string; _doc: object }>> {
     const response = await apiClient.post("/api/auth/login", credentials);
 
@@ -140,22 +140,22 @@ class Services {
   }
 
   public async createPujaType(
-    pujaTypeData: Omit<PujaType, "id" | "createdAt" | "updatedAt">
+    pujaTypeData: Omit<PujaType, "id" | "createdAt" | "updatedAt">,
   ): Promise<PujaType> {
     const response = await apiClient.post(
       "/api/admin/puja-types",
-      pujaTypeData
+      pujaTypeData,
     );
     return response.data;
   }
 
   public async updatePujaType(
     id: string,
-    pujaTypeData: Partial<PujaType>
+    pujaTypeData: Partial<PujaType>,
   ): Promise<PujaType> {
     const response = await apiClient.put(
       `/api/admin/puja-types/${id}`,
-      pujaTypeData
+      pujaTypeData,
     );
     return response.data;
   }
@@ -214,7 +214,7 @@ class Services {
   }
 
   async uploadSingleImage(
-    file: File
+    file: File,
   ): Promise<{ url: string; filename: string }> {
     const formData = new FormData();
     formData.append("image", file);
@@ -241,7 +241,7 @@ class Services {
   }
 
   async uploadMultipleImages(
-    files: File[]
+    files: File[],
   ): Promise<Array<{ url: string; filename: string }>> {
     const formData = new FormData();
     files.forEach((file) => {
@@ -269,7 +269,7 @@ class Services {
 
   public async addImage(
     file: File,
-    templeId?: string
+    templeId?: string,
   ): Promise<{ url: string; filename: string }> {
     const formData = new FormData();
     formData.append("image", file);
@@ -285,7 +285,7 @@ class Services {
           "Content-Type": undefined as unknown as string,
         },
         withCredentials: true,
-      }
+      },
     );
 
     // Support different response shapes (raw body or wrapped in `data`)

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { TempleController } from "./temple.controller";
-import type { Temple } from "../../types/api";
+import type { Temple } from "../../types/data";
 
 interface UseTempleState {
   temples: Temple[];
@@ -12,11 +12,11 @@ interface UseTempleReturn extends UseTempleState {
   refetch: () => Promise<void>;
   fetchTemples: () => Promise<void>;
   createTemple: (
-    payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">
+    payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">,
   ) => Promise<Temple | null>;
   updateTemple: (
     id: string,
-    payload: Partial<Temple>
+    payload: Partial<Temple>,
   ) => Promise<Temple | null>;
   deleteTemple: (id: string) => Promise<{ success: boolean } | null>;
   addPackage: (templeId: string, payload: any) => Promise<any | null>;
@@ -67,12 +67,12 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
         return [];
       }
     },
-    [controller]
+    [controller],
   );
 
   const createTemple = useCallback(
     async (
-      payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">
+      payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">,
     ): Promise<Temple | null> => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
@@ -80,12 +80,13 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return created;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to create temple";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to create temple";
         setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   const updateTemple = useCallback(
@@ -96,12 +97,13 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return updated;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to update temple";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to update temple";
         setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   const deleteTemple = useCallback(
@@ -112,12 +114,13 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return res;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to delete temple";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to delete temple";
         setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   const addPackage = useCallback(
@@ -128,12 +131,13 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return res;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to add package";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to add package";
         setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   const deletePackage = useCallback(
@@ -144,12 +148,13 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return res;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to delete package";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to delete package";
         setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   const addImage = useCallback(
@@ -160,12 +165,13 @@ export const useTemple = ({ autoFetch = true }: { autoFetch?: boolean }) => {
         setState((prev) => ({ ...prev, loading: false, error: null }));
         return res;
       } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to add image";
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to add image";
         setState((prev) => ({ ...prev, loading: false, error: errorMessage }));
         throw err;
       }
     },
-    [controller]
+    [controller],
   );
 
   useEffect(() => {

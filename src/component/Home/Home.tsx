@@ -84,7 +84,7 @@ const Home = () => {
 
       <div className={"home-container"}>
         {/* <Sidebar isOpen={true}/> */}
-        <Dashboard />
+        {/* <Dashboard /> */}
       </div>
     </div>
   );

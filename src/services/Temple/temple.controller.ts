@@ -1,5 +1,5 @@
 import { TempleAPI } from "./temple.api";
-import type { Temple } from "../../types/api";
+import type { Temple } from "../../types/data";
 
 export class TempleController {
   private static instance: TempleController;
@@ -20,7 +20,7 @@ export class TempleController {
   }
 
   async createTemple(
-    payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">
+    payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">,
   ): Promise<Temple> {
     return TempleAPI.createTemple(payload);
   }

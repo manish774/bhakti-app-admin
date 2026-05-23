@@ -1,18 +1,97 @@
-// API Types
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
+/**
+ * API Types - Re-exports from data.ts for backward compatibility
+ * New code should import directly from types/data.ts
+ */
 
-export interface PujaType {
-  id?: string;
-  name: string;
-  description: string;
-  duration: number;
-  price: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
+// Re-export all types from data.ts
+export {
+  type IStatus,
+  type IActivness,
+  type GroupTypes,
+  type IUser,
+  type IUserAuth,
+  type SignupRequest,
+  type LoginRequest,
+  type LoginResponse,
+  type VerifyOtpRequest,
+  type VerifyOtpResponse,
+  type ResendOtpRequest,
+  type ResendOtpResponse,
+  type UpdateProfileRequest,
+  type CoreEventIds,
+  type CoreEvent,
+  type CreateCoreEventRequest,
+  type UpdateCoreEventRequest,
+  type GetCoreEventsByTypesRequest,
+  type GetCoreEventsResponse,
+  type IPackageDescription,
+  type IPackage,
+  type CreatePackageRequest,
+  type UpdatePackageRequest,
+  type DeletePackageRequest,
+  type GetPackagesByIdsRequest,
+  type GetPackagesResponse,
+  type PackageIddec,
+  type Ievent,
+  type CreateEventRequest,
+  type UpdateEventRequest,
+  type DeleteEventRequest,
+  type GetEventsResponse,
+  type ILocation,
+  type IPrasadDelivery,
+  type ITemple,
+  type CreateTempleRequest,
+  type UpdateTempleRequest,
+  type IPandit,
+  type CreatePanditRequest,
+  type UpdatePanditRequest,
+  type DeletePanditRequest,
+  type IBookingDevotee,
+  type BookingStatus,
+  type PaymentStatus,
+  type IBooking,
+  type CreateBookingRequest,
+  type UpdateBookingRequest,
+  type IQuestions,
+  type IAnswers,
+  type CreateQuestionRequest,
+  type CreateAnswerRequest,
+  type IGame,
+  type StartGameRequest,
+  type GameStartResponse,
+  type IGroups,
+  type CreateGroupRequest,
+  type UpdateGroupRequest,
+  type IPujaDescription,
+  type IBenefit,
+  type IPujaMetadata,
+  type IPuja,
+  type CreatePujaRequest,
+  type UpdatePujaRequest,
+  type UploadedFile,
+  type UploadSingleResponse,
+  type UploadMultipleResponse,
+  type ApiError,
+  type Pagination,
+  type PaginatedResponse,
+  type ApiResponse,
+  type ListResponse,
+  type AdminPagination,
+  type AdminApiResponse,
+  type AdminBookingsListResponse,
+  type AdminBookingResponse,
+  type AdminBookingCreateResponse,
+  type AdminBookingStatsResponse,
+  type AdminStatusUpdateResponse,
+  type AdminVideoUploadResponse,
+  type LoginCredentials,
+  type PujaType,
+  type User,
+  type TempleResponse,
+} from "./data";
+
+// Keep legacy API-specific types for backward compatibility
+// These should be gradually migrated to use data.ts types
 
 export interface PackageDescription {
   id: number;
@@ -63,49 +142,4 @@ export interface Temple {
   createdAt: string;
   updatedAt: string;
   __v: number;
-}
-
-export interface TempleResponse {
-  success: boolean;
-  data: Temple[];
-  pagination: {
-    current: number;
-    total: number;
-    count: number;
-    totalRecords: number;
-  };
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
-export interface ILocation {
-  addressLine1: string;
-  addressLine2?: string;
-  landmark?: string;
-  city: string;
-  state: string;
-  country: string;
-  pinCode: string;
-}
-
-export interface ITemple {
-  name: string;
-  location: ILocation;
-  image?: string;
-  extraInfo: any;
-  description: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  images?: string[];
 }
