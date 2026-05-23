@@ -18,14 +18,14 @@ export const TempleAPI = {
   },
 
   createTemple: async (
-    payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">
+    payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">,
   ): Promise<Temple> => {
     return service.addTemple(payload as any);
   },
 
   updateTemple: async (
     id: string,
-    payload: Partial<Temple>
+    payload: Partial<Temple>,
   ): Promise<Temple> => {
     return service.updateTemple(id, payload);
   },

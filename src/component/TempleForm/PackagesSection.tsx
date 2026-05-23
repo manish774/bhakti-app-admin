@@ -32,7 +32,7 @@ const PackagesSection: React.FC<PackagesSectionProps> = ({
   const updatePackage = (
     index: number,
     field: keyof Package,
-    value: string | number | boolean
+    value: string | number | boolean,
   ) => {
     const newPackages = [...packages];
     (newPackages[index] as any)[field] = value;
@@ -51,7 +51,7 @@ const PackagesSection: React.FC<PackagesSectionProps> = ({
 
   const removePackageDescription = (
     packageIndex: number,
-    descIndex: number
+    descIndex: number,
   ) => {
     if (packages[packageIndex].description.length > 1) {
       const newPackages = [...packages];
@@ -65,7 +65,7 @@ const PackagesSection: React.FC<PackagesSectionProps> = ({
   const updatePackageDescription = (
     packageIndex: number,
     descIndex: number,
-    value: string
+    value: string,
   ) => {
     const newPackages = [...packages];
     newPackages[packageIndex].description[descIndex].detail = value;
@@ -145,7 +145,7 @@ const PackagesSection: React.FC<PackagesSectionProps> = ({
                   updatePackage(
                     packageIndex,
                     "numberOfPerson",
-                    Number(e.target.value)
+                    Number(e.target.value),
                   )
                 }
                 required
@@ -189,7 +189,7 @@ const PackagesSection: React.FC<PackagesSectionProps> = ({
                     updatePackageDescription(
                       packageIndex,
                       descIndex,
-                      e.target.value
+                      e.target.value,
                     )
                   }
                   placeholder="Enter package detail"

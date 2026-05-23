@@ -20,7 +20,7 @@ export class TempleController {
   }
 
   async createTemple(
-    payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">
+    payload: Omit<Temple, "_id" | "createdAt" | "updatedAt" | "__v">,
   ): Promise<Temple> {
     return TempleAPI.createTemple(payload);
   }
