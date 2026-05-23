@@ -1,5 +1,5 @@
 import React from "react";
-import type { Package, PackageDescription } from "../../types/api";
+import type { Package, PackageDescription } from "../../types/data";
 
 interface PackagesSectionProps {
   packages: Package[];

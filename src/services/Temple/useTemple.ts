@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { TempleController } from "./temple.controller";
-import type { Temple } from "../../types/api";
+import type { Temple } from "../../types/data";
 
 interface UseTempleState {
   temples: Temple[];

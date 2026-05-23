@@ -6,7 +6,7 @@ import type {
   Temple,
   ApiResponse,
   Package,
-} from "../types/api";
+} from "../types/data";
 
 class Services {
   private static instance: Services;

@@ -1,5 +1,5 @@
 import { TempleAPI } from "./temple.api";
-import type { Temple } from "../../types/api";
+import type { Temple } from "../../types/data";
 
 export class TempleController {
   private static instance: TempleController;

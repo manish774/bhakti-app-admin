@@ -10,6 +10,7 @@ import CoreEvents from "../main/coreEvents/CoreEvents";
 import CreateCoreEvent from "../main/coreEvents/CreateCoreEvent";
 import Booking from "../main/Bookings/Booking";
 import Pandit from "../main/pandit/Pandit";
+import Dashboard from "../Dashboard/Dashboard";
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +24,8 @@ export const router = createBrowserRouter([
       {
         element: <ProtectedRoute />, // 👈 content guard
         children: [
-          { index: true, element: <Events /> },
+          { index: true, element: <Dashboard /> },
+          { path: "events", element: <Events /> },
           { path: "temple", element: <Temple /> },
           { path: "packages", element: <Packages /> },
           { path: "events", element: <Events /> },

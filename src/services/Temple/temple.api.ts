@@ -1,6 +1,6 @@
 import apiClient from "../interceptor";
 import Services from "../Services";
-import type { Temple } from "../../types/api";
+import type { Temple } from "../../types/data";
 
 const service = Services.getInstance();
 
